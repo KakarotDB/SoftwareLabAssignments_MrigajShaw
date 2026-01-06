@@ -112,7 +112,8 @@ int postOrderTraversal(TreeNode *root) { // left -> right -> root
     return 1;
 }
 
-int getHeight(TreeNode *root) { //by convention we will represent an empty tree with height -1
+int getHeight(TreeNode *root) { // by convention we will represent an empty tree
+                                // with height -1
     if (root == NULL) {
         return -1; // empty tree
     }
@@ -442,4 +443,3 @@ int main() {
 
     return 0;
 }
-

@@ -143,5 +143,5 @@ int main() {
 
     printf("Sum of both polynomials : \n");
     displayPolynomial(result);
-	return 0;
+    return 0;
 }
