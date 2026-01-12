@@ -12,9 +12,8 @@ void swap(int *a, int *b) {
 }
 
 void BubbleSort(int a[], int n) {
-    if (a == NULL) {
+    if (a == NULL)
         return;
-    }
     for (int i = 0; i < n - 1; i++) {
         for (int j = 0; j < n - i - 1; j++) {
             if (a[j] > a[j + 1]) {
@@ -25,14 +24,12 @@ void BubbleSort(int a[], int n) {
 }
 
 void InsertionSort(int *a, int n) {
-    if (a == NULL) {
+    if (a == NULL)
         return;
-    }
     int i, key, j;
     for (i = 1; i < n; i++) {
         key = a[i];
         j = i - 1;
-
         while (j >= 0 && a[j] > key) {
             a[j + 1] = a[j];
             j--;
@@ -43,18 +40,13 @@ void InsertionSort(int *a, int n) {
 
 int partition(int *a, int low, int high) {
     int mid = (high + low) >> 1;
-    if (a[low] > a[mid]) {
+    if (a[low] > a[mid])
         swap(&a[low], &a[mid]);
-    }
-    if (a[low] > a[high]) {
+    if (a[low] > a[high])
         swap(&a[low], &a[high]);
-    }
-    if (a[mid] > a[high]) {
+    if (a[mid] > a[high])
         swap(&a[mid], &a[high]);
-    }
-    // now we have sorted the three elements at these positions, so our median
-    // would be a[mid] we put a[mid] at high for the algorithm and choosing this
-    // as pivot
+
     swap(&a[mid], &a[high]);
 
     int i = low - 1;
@@ -66,7 +58,6 @@ int partition(int *a, int low, int high) {
         }
     }
     swap(&a[++i], &a[high]);
-
     return i;
 }
 
@@ -81,36 +72,21 @@ void quickSort(int *a, int low, int high) {
 void merge(int *leftArray, int leftSize, int *rightArray, int rightSize,
            int *array) {
     int i = 0, l = 0, r = 0;
-
     while (l < leftSize && r < rightSize) {
-        if (leftArray[l] < rightArray[r]) {
-            array[i] = leftArray[l];
-            i++;
-            l++;
-        } else {
-            array[i] = rightArray[r];
-            i++;
-            r++;
-        }
+        if (leftArray[l] < rightArray[r])
+            array[i++] = leftArray[l++];
+        else
+            array[i++] = rightArray[r++];
     }
-
-    while (l < leftSize) {
-        array[i] = leftArray[l];
-        i++;
-        l++;
-    }
-
-    while (r < rightSize) {
-        array[i] = rightArray[r];
-        i++;
-        r++;
-    }
+    while (l < leftSize)
+        array[i++] = leftArray[l++];
+    while (r < rightSize)
+        array[i++] = rightArray[r++];
 }
 
 void mergeSort(int *array, int n) {
     if (n <= 1)
         return;
-
     int mid = n / 2;
     int leftSize = mid;
     int rightSize = n - mid;
@@ -123,93 +99,74 @@ void mergeSort(int *array, int n) {
 
     mergeSort(leftArray, leftSize);
     mergeSort(rightArray, rightSize);
-
     merge(leftArray, leftSize, rightArray, rightSize, array);
 
     free(leftArray);
     free(rightArray);
 }
 
-void sort(int *a, int n) {
+void showStats(int n) {
+
+    int *master = (int *)malloc(n * sizeof(int));
+    int *temp = (int *)malloc(n * sizeof(int));
+
+    for (int i = 0; i < n; i++) {
+        master[i] = rand();
+    }
+
     clock_t start, end;
-    start = clock();
-    BubbleSort(a, n);
-    end = clock();
-    double bubble_Sort = (double)(end - start) / CLOCKS_PER_SEC;
-    printf("Time taken for BubbleSort : %f\n", bubble_Sort);
+    double time_taken;
 
-    start = clock();
-    InsertionSort(a, n);
-    end = clock();
-    double insertion_Sort = (double)(end - start) / CLOCKS_PER_SEC;
-    printf("Time taken for InsertionSort: %f\n", insertion_Sort);
+    printf("| %-10d | ", n);
 
+    memcpy(temp, master, n * sizeof(int)); // Reset array
     start = clock();
-    quickSort(a, 0, n - 1);
+    BubbleSort(temp, n);
     end = clock();
-    double quick_Sort = (double)(end - start) / CLOCKS_PER_SEC;
-    printf("Time taken for quickSort: %f\n", quick_Sort);
+    printf("%-10.4f | ", ((double)(end - start)) / CLOCKS_PER_SEC);
 
+    memcpy(temp, master, n * sizeof(int)); // Reset array
     start = clock();
-    mergeSort(a, n);
+    InsertionSort(temp, n);
     end = clock();
-    double merge_Sort = (double)(end - start) / CLOCKS_PER_SEC;
-    printf("Time taken for merge Sort: %f\n", merge_Sort);
-}
+    printf("%-10.4f | ", ((double)(end - start)) / CLOCKS_PER_SEC);
 
-void ShowStats(int *a, int n, int serial) {
-    printf("\nFor array %d of size %d:\n", serial, n);
-    printf("------------Statitstics-----------\n");
-    sort(a, n);
-    printf("----------------------------------\n");
+    memcpy(temp, master, n * sizeof(int)); // Reset array
+    start = clock();
+    quickSort(temp, 0, n - 1);
+    end = clock();
+    printf("%-10.4f | ", ((double)(end - start)) / CLOCKS_PER_SEC);
+
+    memcpy(temp, master, n * sizeof(int)); // Reset array
+    start = clock();
+    mergeSort(temp, n);
+    end = clock();
+    printf("%-10.4f |\n", ((double)(end - start)) / CLOCKS_PER_SEC);
+
+    free(master);
+    free(temp);
 }
 
 int main() {
-    int n1 = 5000;
-    int n2 = 10000;
-    int n3 = 15000;
-    int n4 = 20000;
-    int n5 = 25000;
-    int n6 = 30000;
-    int n7 = 35000;
-    int n8 = 40000;
-    int n9 = 45000;
-    int n10 = 50000;
-
-    int a1[n1], a2[n2], a3[n3], a4[n4], a5[n5], a6[n6], a7[n7], a8[n8], a9[n9],
-        a10[n10];
-
     srand(time(NULL));
 
-    for (int i = 0; i < n1; i++)
-        a1[i] = rand();
-    for (int i = 0; i < n2; i++)
-        a2[i] = rand();
-    for (int i = 0; i < n3; i++)
-        a3[i] = rand();
-    for (int i = 0; i < n4; i++)
-        a4[i] = rand();
-    for (int i = 0; i < n5; i++)
-        a5[i] = rand();
-    for (int i = 0; i < n6; i++)
-        a6[i] = rand();
-    for (int i = 0; i < n7; i++)
-        a7[i] = rand();
-    for (int i = 0; i < n8; i++)
-        a8[i] = rand();
-    for (int i = 0; i < n9; i++)
-        a9[i] = rand();
-    for (int i = 0; i < n10; i++)
-        a10[i] = rand();
+    printf("Performance Comparison (Time in seconds)\n");
+    printf("-------------------------------------------------------------------"
+           "---------------\n");
+    printf("| %-10s | %-10s | %-10s | %-10s | %-10s |\n", "Size", "Bubble",
+           "Insertion", "Quick", "Merge");
+    printf("-------------------------------------------------------------------"
+           "---------------\n");
 
-    ShowStats(a1, n1, 1);
-    ShowStats(a2, n2, 2);
-    ShowStats(a3, n3, 3);
-    ShowStats(a4, n4, 4);
-    ShowStats(a5, n5, 5);
-    ShowStats(a6, n6, 6);
-    ShowStats(a7, n7, 7);
-    ShowStats(a8, n8, 8);
-    ShowStats(a9, n9, 9);
-    ShowStats(a10, n10, 10);
+    int sizes[] = {5000,  10000, 15000, 20000, 25000,
+                   30000, 35000, 40000, 45000, 50000};
+    int num_sizes = sizeof(sizes) / sizeof(sizes[0]);
+
+    for (int i = 0; i < num_sizes; i++) {
+        showStats(sizes[i]);
+    }
+
+    printf("-------------------------------------------------------------------"
+           "---------------\n");
+    return 0;
 }
