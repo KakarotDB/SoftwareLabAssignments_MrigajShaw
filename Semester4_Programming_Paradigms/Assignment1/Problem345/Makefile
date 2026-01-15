@@ -23,5 +23,5 @@ main.o: main.cpp array_utils.h string_utils.h
 
 # Clean target
 clean:
-#	del /f /q *.o *.a client_program.exe	
-	rm -f *.o *.a client_program
+	del /f /q *.o *.a client_program.exe	
+#	rm -f *.o *.a client_program
