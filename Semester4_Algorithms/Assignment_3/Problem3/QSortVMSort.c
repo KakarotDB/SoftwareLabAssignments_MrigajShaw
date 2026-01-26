@@ -19,6 +19,7 @@ void swap(int *a, int *b) {
 
 int partition(int *a, int low, int high, sortMetrics *metrics) {
     int pivot_index = low + rand() % (high - low + 1);
+    // int pivot_index = (high + low) >> 1;
     swap(&a[pivot_index], &a[high]);
 
     int i = low - 1;
@@ -137,9 +138,9 @@ int main() {
     quickSort(arrayQuickSort, 0, n - 1, 0, &quickSortMetrics);
     clock_t end = clock();
 
-    double quickSortTime = (double)(end - start) / CLOCKS_PER_SEC;
+    double quickSortTime = ((double)(end - start)) / CLOCKS_PER_SEC;
 
-    printf("  Execution Time      : %.f seconds\n", quickSortTime);
+    printf("  Execution Time      : %f seconds\n", quickSortTime);
     printf("  Key Comparisons     : %lld\n", quickSortMetrics.comparisons);
     printf("  Max Recursion Depth : %d\n", quickSortMetrics.maxDepth);
 
@@ -151,9 +152,9 @@ int main() {
     mergeSort(arrayMergeSort, n, 0, &mergeSortMetrics);
     end = clock();
 
-    double mergeSortTime = (double)(end - start) / CLOCKS_PER_SEC;
+    double mergeSortTime = ((double)(end - start)) / CLOCKS_PER_SEC;
 
-    printf("  Execution Time      : %.f seconds\n", mergeSortTime);
+    printf("  Execution Time      : %f seconds\n", mergeSortTime);
     printf("  Key Comparisons     : %lld\n", mergeSortMetrics.comparisons);
     printf("  Max Recursion Depth : %d\n", mergeSortMetrics.maxDepth);
 
