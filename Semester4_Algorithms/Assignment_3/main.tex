@@ -1,0 +1,194 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{float}
+
+% Margins
+\geometry{left=15mm, right=15mm, top=25mm, bottom=15mm}
+
+% Header/Footer
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\rfoot{Page \thepage}
+
+\fancypagestyle{firstpage}{
+    \fancyhf{}
+    \lhead{
+        \small \textbf{Name:} Mrigaj Shaw \\ 
+        \small \textbf{Roll No:} 2024CSB041
+    }
+    \chead{\LARGE \textbf{Assignment 3}} 
+    \rfoot{Page \thepage}
+    \renewcommand{\headrulewidth}{1pt}
+}
+
+% Code Style
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{MyCodeStyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=4
+}
+\lstset{style=MyCodeStyle}
+
+\begin{document}
+\thispagestyle{firstpage}
+
+% --- Problem 1 ---
+\section*{Problem 1}
+\textbf{Problem Statement:} In an online examination platform, the examination scores of 100,000 students are
+stored sequentially in an array on the server. Once the examination process is
+completed, the examination authority needs to sort the students's scores efficiently in
+order to prepare rank lists and perform further analysis. Write a C program to implement
+the Randomized Quicksort algorithm for sorting the array of students's scores. The
+program should consider and handle the following three input scenarios:
+
+i) Best-case-like scenario: when the array of scores is already sorted
+in ascending order. 
+
+ii) Worst-case-like scenario for deterministic approaches: when the
+array is sorted in reverse (descending) order. \
+
+iii) Average-case scenario: when the array elements are in a random,
+unsorted order.
+
+Finally, count the total number of comparisons performed during the sorting process
+and measure the execution time required to complete the sorting operation.
+\subsection*{Code}
+\lstinputlisting[language=C]{Problem1/RandomizedQuickSort.c}
+\subsection*{Output}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{Problem1/output1.png}
+\end{figure}
+\newpage
+
+% --- Problem 2 ---
+\section*{Problem 2}
+\textbf{Problem Statement:} Write a C program to study the impact of duplicate keys on the performance of standard
+quicksort and randomized quicksort. The program should generate three integer arrays,
+each of size 100,000, with varying proportions of duplicate elements in order to
+simulate different real-world data distributions. The arrays should be constructed as
+follows:
+
+i) Array–I: Contains approximately 90\% duplicate values,
+representing highly repetitive data.
+
+ii) Array–II: Contains approximately 50\% duplicate values,
+representing moderately repetitive data.
+
+iii) Array–III: Contains approximately 10\% duplicate values,
+representing data with low repetition.
+
+After generating the three arrays, implement and apply the Standard Quicksort (a fixed
+pivot selection strategy) and Randomized Quicksort (a random pivot selection
+strategy). For each combination of array type and sorting algorithm, the program must
+count the total number of key comparisons performed during sorting, measure the
+maximum recursion depth encountered during execution, and measure the execution
+time required to complete the sorting process.
+Finally, analyze and compare the performance of Standard Quicksort and Randomized
+Quicksort across all three data distributions. Plot appropriate 2D graphs (such as input
+distribution vs. execution time, number of comparisons, and recursion depth) to visually
+illustrate the effect of duplicate values on the efficiency and stability of both algorithms.
+
+\subsection*{Code}
+\lstinputlisting[language=C]{Problem2/PerformanceComparisonQSort.c}
+
+\subsection*{Output}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{Problem2/PerformanceComparison.png}
+    \caption{Performance Graphs: Input Distribution vs Time/Comparisons}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{Problem2/output2.png}
+    \caption{Console Output Metrics}
+\end{figure}
+
+% --- INSERT INTO PROBLEM 2 INFERENCE ---
+\subsection*{Inference}
+Based on the experimental data comparing Standard vs. Randomized Quicksort across varying duplicate distributions (90\%, 50\%, 10\%):
+
+\begin{enumerate}
+    \item \textbf{Impact of Duplicates on Performance:} 
+    There is a massive degradation in performance for \textbf{both} algorithms as duplicates increase. 
+    \begin{itemize}
+        \item At \textbf{10\% duplicates}, the sort took $\approx$ 0.002s with $\approx$ 0.65 million comparisons.
+        \item At \textbf{90\% duplicates}, the sort took $\approx$ 0.09s with $\approx$ 40.5 million comparisons.
+    \end{itemize}
+    This exponential-like growth indicates that neither standard nor randomized pivoting handles duplicates efficiently on its own. Without a specialized partitioning scheme (like 3-way partitioning), the recursion depth spikes (reaching $\approx$ 9000) because the partition containing equal elements remains large.
+
+    \item \textbf{Ineffectiveness of Randomization for Duplicates:} 
+    The graphs show almost identical bar heights for Standard and Randomized Quicksort. This is because randomization is designed to fix \textit{sorted} input patterns, not \textit{duplicate} values. If 90\% of the data is identical, a randomly selected pivot is 90\% likely to be one of those duplicates, leading to the same unbalanced partitions as the standard algorithm.
+
+    \item \textbf{Conclusion:} 
+    High numbers of duplicate keys are a pathological case for basic Quicksort implementations, regardless of pivot strategy. To handle Array-I (90\% duplicates) effectively, a scheme like "median of 3" can be beneficial.
+\end{enumerate}
+
+
+\newpage
+
+% --- Problem 3 ---
+\section*{Problem 3}
+\textbf{Problem Statement:} Consider an integer array of size 100,000 in which approximately 80% of the elements
+are already in nearly sorted order, while the remaining elements are randomly
+positioned. Such data distributions are common in real-world applications.
+
+Write a C program to implement both the Quicksort and Merge Sort algorithms for
+sorting the given array. For both sorting technique, Count the total number of key
+comparisons performed during execution, measure the maximum recursion depth
+reached during the sorting process, measure and record the execution time required to
+complete the sorting operation. Based on a comparative analysis of these performance
+metrics, justify which algorithm is more suitable for the given input conditions.
+
+\subsection*{Code}
+\lstinputlisting[language=C]{Problem3/QSortVMSort.c}
+
+\subsection*{Output}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{Problem3/output3.png}
+\end{figure}
+
+% --- INSERT INTO PROBLEM 3 INFERENCE ---
+\subsection*{Inference}
+Analyzing the performance metrics for the 100,000-element, 80\% nearly sorted array:
+
+\begin{enumerate}
+    \item \textbf{Efficiency of Randomization:} 
+    The Randomized Quicksort achieved a maximum recursion depth of \textbf{37}. Given that $\log_2(100,000) \approx 17$, a depth of 37 is excellent and confirms that randomization successfully broke the "sorted" pattern. Without randomization, a standard Quicksort on this dataset would likely have crashed due to stack overflow (depth $\approx$ 100,000).
+
+    \item \textbf{The Comparisons vs. Time Paradox:} 
+    Merge Sort was more efficient in terms of algorithmic steps, performing only \textbf{1.15 million comparisons} compared to Quicksort's \textbf{1.92 million}. However, Randomized Quicksort was nearly \textbf{2x faster} in execution time (0.006s vs 0.011s).
+    
+    \item \textbf{Justification for Result:} 
+    Although Merge Sort did less "work" (fewer comparisons), it incurs significant overhead by allocating auxiliary memory and copying data back and forth. Quicksort operates \textbf{in-place}, which benefits from superior CPU cache locality.
+    
+    \textbf{Conclusion:} For this specific nearly-sorted dataset, \textbf{Randomized Quicksort} is the more suitable choice if raw speed is the priority, as it mitigates the sorting risk while outperforming Merge Sort in runtime. Merge Sort remains the safer choice only if strict $O(N \log N)$ worst-case guarantees are required.
+\end{enumerate}
+
+\newpage
+
+\end{document}

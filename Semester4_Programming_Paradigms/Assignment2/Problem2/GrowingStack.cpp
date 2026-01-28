@@ -13,11 +13,9 @@ struct GrowingStack {
 };
 
 bool initializeStack(GrowingStack &s, const int n) {
-    s.array = NULL;
     s.array = new int[n];
-    if (s.array == NULL) {
+    if (s.array == NULL)
         return false;
-    }
     s.top = -1;
     s.currentSize = 0;
     s.currentMaxSize = n;
@@ -25,7 +23,7 @@ bool initializeStack(GrowingStack &s, const int n) {
     return true;
 }
 
-// default parameters to allow default and custom inflation to the stack
+// default parameter to allow default and custom inflation
 bool inflate(GrowingStack &s, int = sizeExtend);
 
 inline bool isEmpty(const GrowingStack &s) { return s.top == -1; }
@@ -39,24 +37,23 @@ inline bool isMaxCapacity(const GrowingStack &s) {
 }
 
 bool inflate(GrowingStack &s, int amount) {
-    // default : Inflates by 64 bytes (16 integers)
     if (s.currentMaxSize >= s.upperBound)
         return false;
+
     int newCapacity = s.currentSize + amount;
 
     int *newStackArray = new int[newCapacity];
     if (!newStackArray)
         return false;
 
-    // this is O(n). There is overhead as there is new allocation -> copy
     for (int i = 0; i < s.currentSize; i++)
         newStackArray[i] = s.array[i];
+
     for (int i = s.currentSize; i < newCapacity; i++)
         newStackArray[i] = 0;
 
     delete[] s.array;
     s.array = newStackArray;
-    s.currentSize = s.currentMaxSize;
     s.currentMaxSize = newCapacity;
 
     return true;
@@ -65,26 +62,49 @@ bool inflate(GrowingStack &s, int amount) {
 bool push(GrowingStack &s, const int value) {
     if (isMaxCapacity(s))
         return false;
+
     if (isFull(s)) {
         if (!inflate(s))
             return false;
     }
+
     s.array[++s.top] = value;
     s.currentSize++;
+    return true;
+}
+
+bool push(GrowingStack &s, const int *values, int count) {
+    if (count <= 0)
+        return true;
+
+    if (s.currentSize + count > s.upperBound)
+        return false;
+
+    if (s.currentSize + count > s.currentMaxSize) {
+
+        int amountNeeded = (count > sizeExtend) ? count : sizeExtend;
+
+        if (!inflate(s, amountNeeded)) {
+            return false;
+        }
+    }
+
+    for (int i = 0; i < count; i++) {
+        s.array[++s.top] = values[i];
+    }
+    s.currentSize += count;
+
     return true;
 }
 
 bool pop(GrowingStack &s, int &poppedValue) {
     if (isEmpty(s))
         return false;
-
     poppedValue = s.array[s.top];
     s.array[s.top--] = 0;
     s.currentSize--;
-
     return true;
 }
-
 } // namespace StackSystem
 
 int main() {
@@ -98,10 +118,15 @@ int main() {
     initializeStack(stack2, n);
     initializeStack(stack3, n);
 
-    for (int i = 0; i < n; i++)
-        push(stack1, i + 1);
-    for (int i = 0; i < n; i++)
-        push(stack2, i + n + 1);
+    int data1[n];
+    int data2[n];
+
+    for (int i = 0; i < n; i++) {
+        data1[i] = i + 1;
+        data2[i] = i + n + 1;
+    }
+    push(stack1, data1, n);
+    push(stack2, data2, n);
 
     cout << "Stack 1 elements : " << endl;
 
