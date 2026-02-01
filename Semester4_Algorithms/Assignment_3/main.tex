@@ -1,11 +1,17 @@
 \documentclass[a4paper,12pt]{article}
 \usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc} % Critical for modern fonts in pdflatex
 \usepackage{geometry}
 \usepackage{fancyhdr}
 \usepackage{listings}
 \usepackage{xcolor}
 \usepackage{graphicx}
 \usepackage{float}
+
+% --- FONTS (The Package Method) ---
+% MiKTeX will ask to install these automatically when you run it.
+\usepackage[sfdefault]{inter} % Sets Inter as the main text font
+\usepackage[scale=0.85]{roboto-mono} % Sets Roboto Mono as code font
 
 % Margins
 \geometry{left=15mm, right=15mm, top=25mm, bottom=15mm}
@@ -39,7 +45,7 @@
     keywordstyle=\color{magenta},
     numberstyle=\tiny\color{codegray},
     stringstyle=\color{codepurple},
-    basicstyle=\ttfamily\footnotesize,
+    basicstyle=\ttfamily\footnotesize, % This will now use Roboto Mono
     breakatwhitespace=false,         
     breaklines=true,                 
     keepspaces=true,                 
@@ -51,8 +57,8 @@
     tabsize=4
 }
 \lstset{style=MyCodeStyle}
-
 \begin{document}
+% ... Your content ...
 \thispagestyle{firstpage}
 
 % --- Problem 1 ---

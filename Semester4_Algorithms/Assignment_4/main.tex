@@ -1,0 +1,246 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{float}
+
+% Margins
+\geometry{left=15mm, right=15mm, top=25mm, bottom=15mm}
+
+% Header/Footer
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\rfoot{Page \thepage}
+
+\fancypagestyle{firstpage}{
+    \fancyhf{}
+    \lhead{
+        \small \textbf{Name:} Mrigaj Shaw \\ 
+        \small \textbf{Roll No:} 2024CSB041
+    }
+    \chead{\LARGE \textbf{Assignment 4}} 
+    \rfoot{Page \thepage}
+    \renewcommand{\headrulewidth}{1pt}
+}
+
+% Code Style
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{MyCodeStyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=4
+}
+\lstset{style=MyCodeStyle}
+
+\begin{document}
+\thispagestyle{firstpage}
+
+% --- Problem1 ---
+\section*{Problem 1}
+\textbf{Problem Statement:} An online educational analytics platform conducts national-level mock
+examinations for various competitive tests. In each examination session,
+approximately 110,000 students participate simultaneously. Once the test concludes,
+the scores obtained by all students are collected and stored on the server in the form of
+an unsorted integer array. To generate real-time performance analytics, such as
+identifying the central tendency of student performance, the platform needs to compute
+the median score as efficiently as possible. Since the dataset is large, the choice of
+algorithm has a significant impact on both execution time and memory utilization.
+Write a C program to determine the median score using two different approaches, as
+described below:
+
+i) Fixed Pivot-Based Approach: Employs a divide-and-conquer approach in
+which the pivot is selected in a fixed manner.
+
+ii) Quickselect-Based Approach: Determine the median using the Quickselect
+algorithm, which finds the required order statistic without fully sorting the
+array.
+
+After implementing both methods, perform a comparative analysis of the two
+approaches by evaluating and discussing their:
+
+i) Time complexity in the best case, average case, and worst case
+
+ii) Space complexity in the best case, average case, and worst case
+
+Finally, justify which approach is more suitable for handling large-scale, real-time
+examination data and explain your conclusion with appropriate reasoning.
+\subsection*{Code}
+\lstinputlisting[language=C]{Problem1/MedianScore.c}
+\subsection*{Output}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{Problem1/output1.png}
+\end{figure}
+
+\subsection*{Inference}
+
+The following conclusions can be made from the code and algorithm:
+
+\begin{enumerate}
+    \item \textbf{Functional Correctness}:
+    \begin{itemize}
+        \item Both the \textbf{Fixed Pivot-Based Approach} and the \textbf{Quickselect-Based Approach} successfully computed the identical median value (\textbf{14}). This confirms that both algorithms correctly identify the central tendency of the dataset without needing to sort the entire array.
+    \end{itemize}
+
+    \item \textbf{Performance Analysis}:
+    \begin{itemize}
+        \item \textbf{Fixed Pivot Approach}: This method executed in \textbf{0.003000 seconds}. In this implementation, the pivot is fixed (typically the last element of the partition). For the random dataset generated (\texttt{rand() \% 100}), this simple strategy proved highly efficient.
+        \item \textbf{Quickselect Algorithm}: This method executed in \textbf{0.356000 seconds}. Although theoretically similar to the fixed pivot approach (both have an average time complexity of $O(N)$), the specific implementation or the sequence of recursive calls resulted in a significantly higher execution time for this specific dataset.
+        \item \textbf{Observation}: The drastic difference suggests that while both are linear on average, the overhead of specific recursive logic or partition balance can vary. In this specific random instance, the Fixed Pivot logic converged much faster.
+    \end{itemize}
+
+    \item \textbf{Time and Space Complexity}:
+    \begin{itemize}
+        \item \textbf{Time Complexity}: Both algorithms rely on the partitioning logic.
+        \begin{itemize}
+            \item \textbf{Average Case}: $O(N)$. The problem size reduces geometrically (e.g., $N + N/2 + N/4...$), leading to linear time.
+            \item \textbf{Worst Case}: $O(N^2)$. If the pivot is consistently the smallest or largest element (e.g., sorted data), the partition only reduces the problem size by 1.
+        \end{itemize}
+        \item \textbf{Space Complexity}: Both algorithms are in-place ($O(1)$ auxiliary space) but require recursion stack space. This ranges from $O(\log N)$ in the best case to $O(N)$ in the worst case.
+    \end{itemize}
+
+    \item \textbf{Suitability for Real-Time Examination Data}:
+    \begin{itemize}
+        \item \textbf{Conclusion}: The \textbf{Quickselect-Based Approach} (specifically with \textit{Randomized Pivot}) is generally the more suitable choice for large-scale, real-time systems.
+        \item \textbf{Justification}: While the Fixed Pivot performed better in this specific random test, it is vulnerable to \textbf{worst-case $O(N^2)$ performance} if the input data is already sorted or follows a specific pattern. A Randomized Quickselect minimizes this risk, ensuring predictable performance close to $O(N)$ regardless of the input distribution, which is critical for a system needing to proces \textbf{1e5} scores simultaneously many times.
+    \end{itemize}
+\end{enumerate}
+\newpage
+
+% --- Problem2 ---
+\section*{Problem 2} 
+\textbf{Problem Statement:} A national digital census and survey platform periodically gathers extensive
+demographic and economic information from 120000 households distributed across
+the country. Among the various data points collected, household income values are
+stored on the server in the form of a large unsorted array. After the completion of each
+survey cycle, policymakers and analysts require reliable statistical indicators to support
+data-driven decision-making. One of the most critical measures is the median
+household income, as it provides a robust representation of central tendency and is not
+unduly influenced by extreme income values.
+
+Given the enormous size of the dataset, sorting the entire array to compute the median
+becomes computationally expensive and impractical for real-time or near real-time
+analysis. To overcome this limitation, the analytics team opts for a deterministic
+linear-time selection algorithm, commonly referred to as the Median of Medians
+method, which guarantees O(n) worst-case time complexity.
+
+Write a C program that computes the median household income using the Median
+of Medians algorithm. The implementation should avoid full-array sorting and ensure
+deterministic performance irrespective of input distribution.
+
+After successfully implementing the algorithm, perform a comparative performance
+analysis between the Median of Medians method and the Quickselect-based median
+finding method. The comparison must include a detailed evaluation of both algorithms
+in terms of their:
+
+i) Best-case, average-case, and worst-case time complexities
+
+ii) Best-case, average-case, and worst-case space complexities
+
+Finally, represent the comparative results graphically by plotting the complexity
+values on a two-dimensional (2D) plane, and critically analyze the plots to justify the
+suitability of each method for large-scale census data processing.
+
+\subsection*{Code}
+\lstinputlisting[language=C]{Problem2/MedianOfMedians.c}
+% \lstinputlisting[language=C]{Problem2/visualization.py}
+\subsection*{Output}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{Problem2/Figure_1.png}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{Problem2/output2.png}
+\end{figure}
+\subsection*{Inference}
+
+The implementation and comparative analysis of the \textbf{Median of Medians (MoM)} algorithm versus the \textbf{Quickselect} method yield the following technical insights:
+
+\begin{enumerate}
+    \item \textbf{Deterministic Performance Guarantee}:
+    The primary advantage of the Median of Medians algorithm is its \textbf{guaranteed $O(n)$ worst-case time complexity}. Unlike standard Quickselect, which can degrade to $O(n^2)$ if poor pivots are chosen, MoM ensures a "good" pivot by calculating the median of groups of five.
+    
+    The recurrence relation is:
+    \[ T(n) \le T\left(\frac{n}{5}\right) + T\left(\frac{7n}{10}\right) + O(n) \]
+    Since $\frac{1}{5} + \frac{7}{10} = \frac{9}{10} < 1$, the Master Theorem confirms the total work remains linear.
+
+    \item \textbf{Comparative Complexity Evaluation}:
+    \begin{table}[H]
+        \centering
+        \begin{tabular}{|l|c|c|c|}
+            \hline
+            \textbf{Algorithm} & \textbf{Best Case} & \textbf{Average Case} & \textbf{Worst Case} \\ \hline
+            Quickselect & $O(n)$ & $O(n)$ & $O(n^2)$ \\ \hline
+            Median of Medians & $O(n)$ & $O(n)$ & $O(n)$ \\ \hline
+        \end{tabular}
+        \caption{Time Complexity Comparison}
+    \end{table}
+
+    \item \textbf{Space Complexity Analysis}:
+    Both methods are in-place in terms of data storage, but use auxiliary space for recursion:
+    \begin{itemize}
+        \item \textbf{Quickselect}: $O(\log n)$ average, $O(n)$ worst-case stack depth.
+        \item \textbf{MoM}: $O(n)$ worst-case stack depth due to the dual-recursion (finding the median of medians and then the final selection).
+    \end{itemize}
+
+    \item \textbf{Critical Analysis of 2D Plots}:
+    As observed in the generated plots:
+    \begin{itemize}
+        \item \textbf{Slope Differences}: The MoM curve has a steeper linear slope compared to Quickselect's average case. This is due to the "overhead" of partitioning into groups of five and the extra recursive calls.
+        \item \textbf{Scalability}: For the census dataset of $120,000$ households, the MoM algorithm provides an "insurance policy" against extreme data distributions, ensuring that statistical reporting never hangs or times out.
+    \end{itemize}
+
+    \item \textbf{Conclusion for Large-Scale Census Data}:
+    For national census processing, \textbf{Median of Medians} is the superior choice. In a real-world demographic system, data may arrive partially sorted or with massive duplicate values, which are known to cause problems for Quick Select algorithm. MoM provides the deterministic reliability required for government-grade data analytics.
+\end{enumerate}
+
+\newpage
+
+% --- Problem3 ---
+\section*{Problem 3}
+\textbf{Problem Statement:} A financial technology analytics firm processes transaction data from two
+independent banking systems. Each bank stores the daily transaction amounts of its
+customers in a sorted array (sorted in non-decreasing order). At the end of each day,
+the firm must compute the median transaction value across both banks to generate
+risk and liquidity assessment reports. Due to strict performance requirements and
+memory constraints, the firm cannot afford to merge the two arrays into a single array.
+Instead, the median must be computed directly from the two sorted datasets using an
+efficient algorithm.
+
+Write a C program to compute the median of the combined dataset formed by two given
+sorted arrays, without merging the arrays into a single structure. Further, examine
+whether it is possible to design an algorithm that solves this problem with logarithmic
+time complexity. If such an algorithm exists, implement your solution strictly
+following that approach and justify its efficiency through appropriate time complexity
+analysis.
+\subsection*{Code}
+\lstinputlisting[language=C]{Problem3/MedianOfTwoSortedArraysWithoutMerging.c}
+\subsection*{Output}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{Problem3/output3.png}
+\end{figure}
+\newpage
+
+\end{document}
