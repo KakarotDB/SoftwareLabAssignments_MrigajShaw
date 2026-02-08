@@ -3,17 +3,22 @@
 #define Upper_Bound (int)1e5
 using std::cin, std::cout, std::endl;
 
+struct Point {
+    int x, y;
+};
+
 namespace StackSystem {
-struct GrowingStack {
-    int *array;
+
+template <typename T> struct GrowingStack {
+    T *array;
     int top;
     int currentSize;
     int currentMaxSize;
     int upperBound;
 };
 
-bool initializeStack(GrowingStack &s, const int n) {
-    s.array = new int[n];
+template <typename T> bool initializeStack(GrowingStack<T> &s, const int n) {
+    s.array = new T[n];
     if (s.array == NULL)
         return false;
     s.top = -1;
@@ -23,34 +28,37 @@ bool initializeStack(GrowingStack &s, const int n) {
     return true;
 }
 
-// default parameter to allow default and custom inflation
-bool inflate(GrowingStack &s, int = sizeExtend);
+template <typename T> bool inflate(GrowingStack<T> &s, int = sizeExtend);
 
-inline bool isEmpty(const GrowingStack &s) { return s.top == -1; }
+template <typename T> inline bool isEmpty(const GrowingStack<T> &s) {
+    return s.top == -1;
+}
 
-inline bool isFull(const GrowingStack &s) {
+template <typename T> inline bool isFull(const GrowingStack<T> &s) {
     return s.currentSize == s.currentMaxSize;
 }
 
-inline bool isMaxCapacity(const GrowingStack &s) {
+template <typename T> inline bool isMaxCapacity(const GrowingStack<T> &s) {
     return s.currentSize == s.upperBound;
 }
 
-bool inflate(GrowingStack &s, int amount) {
+template <typename T> bool inflate(GrowingStack<T> &s, int amount) {
     if (s.currentMaxSize >= s.upperBound)
         return false;
 
     int newCapacity = s.currentSize + amount;
 
-    int *newStackArray = new int[newCapacity];
+    T *newStackArray = new T[newCapacity];
     if (!newStackArray)
         return false;
 
+    // Copy existing elements
     for (int i = 0; i < s.currentSize; i++)
         newStackArray[i] = s.array[i];
 
+    // Initialize new slots with default value of T
     for (int i = s.currentSize; i < newCapacity; i++)
-        newStackArray[i] = 0;
+        newStackArray[i] = T{};
 
     delete[] s.array;
     s.array = newStackArray;
@@ -59,7 +67,7 @@ bool inflate(GrowingStack &s, int amount) {
     return true;
 }
 
-bool push(GrowingStack &s, const int value) {
+template <typename T> bool push(GrowingStack<T> &s, const T value) {
     if (isMaxCapacity(s))
         return false;
 
@@ -73,7 +81,8 @@ bool push(GrowingStack &s, const int value) {
     return true;
 }
 
-bool push(GrowingStack &s, const int *values, int count) {
+template <typename T>
+bool push(GrowingStack<T> &s, const T *values, int count) {
     if (count <= 0)
         return true;
 
@@ -81,9 +90,7 @@ bool push(GrowingStack &s, const int *values, int count) {
         return false;
 
     if (s.currentSize + count > s.currentMaxSize) {
-
         int amountNeeded = (count > sizeExtend) ? count : sizeExtend;
-
         if (!inflate(s, amountNeeded)) {
             return false;
         }
@@ -93,77 +100,89 @@ bool push(GrowingStack &s, const int *values, int count) {
         s.array[++s.top] = values[i];
     }
     s.currentSize += count;
-
     return true;
 }
 
-bool pop(GrowingStack &s, int &poppedValue) {
+template <typename T> bool pop(GrowingStack<T> &s, T &poppedValue) {
     if (isEmpty(s))
         return false;
     poppedValue = s.array[s.top];
-    s.array[s.top--] = 0;
+    s.array[s.top--] = T{}; // T{} is calling default constructor where it will
+                            // go back to its initialized value
     s.currentSize--;
     return true;
 }
+
 } // namespace StackSystem
 
 int main() {
     using namespace StackSystem;
+    cout << "Integer Stack" << endl;
+    int n = 5;
+    GrowingStack<int> intStack;
+    initializeStack(intStack, n);
 
-    int n = 20;
-    int counter = 1, poppedValue = -1;
-    GrowingStack stack1, stack2, stack3;
+    for (int i = 1; i <= 5; i++)
+        push(intStack, i * 10);
 
-    initializeStack(stack1, n);
-    initializeStack(stack2, n);
-    initializeStack(stack3, n);
-
-    int data1[n];
-    int data2[n];
-
-    for (int i = 0; i < n; i++) {
-        data1[i] = i + 1;
-        data2[i] = i + n + 1;
+    int poppedInt;
+    cout << "Popping ints: ";
+    while (!isEmpty(intStack)) {
+        pop(intStack, poppedInt);
+        cout << poppedInt << " ";
     }
-    push(stack1, data1, n);
-    push(stack2, data2, n);
+    cout << endl << endl;
 
-    cout << "Stack 1 elements : " << endl;
+    cout << "Float Stack " << endl;
+    GrowingStack<float> floatStack;
+    initializeStack(floatStack, 5);
 
-    for (int i = 0; i < n; i++)
-        cout << stack1.array[i] << " ";
-    cout << endl;
+    push(floatStack, 1.1f);
+    push(floatStack, 2.2f);
+    push(floatStack, 3.3f);
 
-    cout << "Stack 2 elements : " << endl;
-
-    for (int i = 0; i < n; i++)
-        cout << stack2.array[i] << " ";
-    cout << endl;
-
-    while (!isEmpty(stack1) && !isEmpty(stack2)) {
-        if (counter % 2 != 0) {
-            pop(stack1, poppedValue);
-            push(stack3, poppedValue);
-        } else {
-            pop(stack2, poppedValue);
-            push(stack3, poppedValue);
-        }
-        counter++;
+    float poppedFloat;
+    cout << "Popping floats: ";
+    while (!isEmpty(floatStack)) {
+        pop(floatStack, poppedFloat);
+        cout << poppedFloat << " ";
     }
-    while (!isEmpty(stack1)) {
-        pop(stack1, poppedValue);
-        push(stack3, poppedValue);
-    }
-    while (!isEmpty(stack2)) {
-        pop(stack2, poppedValue);
-        push(stack3, poppedValue);
-    }
+    cout << endl << endl;
 
-    cout << "Stack 3 elements : " << endl;
+    cout << "Struct Stack" << endl;
+    GrowingStack<Point> pointStack;
+    initializeStack(pointStack, 5);
 
-    for (int i = 0; i < stack3.currentSize; i++)
-        cout << stack3.array[i] << " ";
-    cout << endl;
+    Point p1 = {1, 2};
+    Point p2 = {3, 4};
+    push(pointStack, p1);
+    push(pointStack, p2);
+
+    Point poppedPoint;
+    cout << "Popping structs: ";
+    while (!isEmpty(pointStack)) {
+        pop(pointStack, poppedPoint);
+        cout << poppedPoint.x << poppedPoint.y << " ";
+    }
+    cout << endl << endl;
+
+    /*
+     * While it is possible to instantiate a GrowingStack<char*>
+     * it is dangerous and we generally avoid doing it
+     * Why? Because of the following reasons :
+     *  - Shallow copy :
+     *      - The stack would store the pointer to the character array.
+     *        and not the string itself. If the original string somehow changes
+     *        or goes out of scope, the stack would hold a dangling pointer
+     *  - Memory management issues :
+     *      - If a character array was allocating dynamically using "new",
+     *        simply popping the pointer or deleting the stack array would not
+     *        actually free the actual string memory which may lead to memory
+     *        leaks
+     *
+     * Instead of GrowingStack<char*>, using the in built string class would
+     * prove to be more beneficial and safer
+     */
 
     return 0;
 }
