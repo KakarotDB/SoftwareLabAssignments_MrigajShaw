@@ -1,4 +1,5 @@
 \documentclass[a4paper,12pt]{article}
+\usepackage{amsmath}
 \usepackage[utf8]{inputenc}
 \usepackage{geometry}
 \usepackage{fancyhdr}
@@ -97,7 +98,7 @@ examination data and explain your conclusion with appropriate reasoning.
 The following conclusions can be made from the code and algorithm:
 
 \begin{enumerate}
-    \item \textbf{Functional Correctness}:
+    \item \textbf{Correctness}:
     \begin{itemize}
         \item Both the \textbf{Fixed Pivot-Based Approach} and the \textbf{Quickselect-Based Approach} successfully computed the identical median value (\textbf{14}). This confirms that both algorithms correctly identify the central tendency of the dataset without needing to sort the entire array.
     \end{itemize}
@@ -208,7 +209,7 @@ The implementation and comparative analysis of the \textbf{Median of Medians (Mo
     As observed in the generated plots:
     \begin{itemize}
         \item \textbf{Slope Differences}: The MoM curve has a steeper linear slope compared to Quickselect's average case. This is due to the "overhead" of partitioning into groups of five and the extra recursive calls.
-        \item \textbf{Scalability}: For the census dataset of $120,000$ households, the MoM algorithm provides an "insurance policy" against extreme data distributions, ensuring that statistical reporting never hangs or times out.
+        \item \textbf{Scalability}: For the census dataset of $120,000$ households, the MoM algorithm provides a robust solution against skewed data, ensuring that statistical reporting never hangs or times out.
     \end{itemize}
 
     \item \textbf{Conclusion for Large-Scale Census Data}:
@@ -241,6 +242,50 @@ analysis.
     \centering
     \includegraphics[width=0.9\textwidth]{Problem3/output3.png}
 \end{figure}
+
+\subsection*{Inference}
+
+\subsection*{Inference}
+
+After implementing and testing the solution, and analyzing the code's behavior and efficiency. Here are my observations regarding why and how this approach meets the problem's constraints:
+
+\begin{enumerate}
+    \item \textbf{Time Complexity and Recurrence Analysis}:
+    The problem required a logarithmic solution. My implementation achieves this by avoiding a full traversal of the arrays. Instead, it performs a binary search on the smaller array (let $N = \min(n_1, n_2)$).
+    
+    We can define the time complexity $T(N)$ using the following recurrence relation:
+    \[ T(N) = T\left(\frac{N}{2}\right) + c \]
+    Where:
+    \begin{itemize}
+        \item $T(N/2)$ represents the search space being halved in every iteration of the \texttt{while} loop.
+        \item $c$ represents the constant time $O(1)$ operations performed inside the loop (calculating partition indices and comparing \texttt{maxLeft} vs \texttt{minRight}).
+    \end{itemize}
+    Solving this recurrence (using the Master Theorem or substitution), we get:
+    \[ T(N) = O(\log N) \]
+    This mathematically proves that the solution is logarithmic, $O(\log(\min(n_1, n_2)))$, making it significantly faster than the linear $O(n_1 + n_2)$ merge approach.
+
+    \item \textbf{Space Complexity (Memory Constraints)}:
+    The problem explicitly stated that we cannot merge the arrays due to memory limits.
+    \begin{itemize}
+        \item A traditional merge would cost $O(n_1 + n_2)$ space to hold the new data.
+        \item My implementation runs in \textbf{$O(1)$ auxiliary space}. It does not allocate any new dynamic arrays; it simply uses a fixed set of integer variables (\texttt{partitionX}, \texttt{partitionY}, etc.) to track indices. This makes it ideal for the memory-constrained banking system described.
+    \end{itemize}
+
+    \item \textbf{Verification of Logic}:
+    The core logic relies on finding a partition where all elements on the left are smaller than all elements on the right:
+    \[ \max(\text{LeftPart}) \le \min(\text{RightPart}) \]
+    I verified this with the "Bank A vs Bank B" test case:
+    \begin{itemize}
+        \item \textbf{Input}: Bank A (8 elements) and Bank B (5 elements). Total = 13.
+        \item \textbf{Expected Result}: The median is the $7^{th}$ element in the virtual sorted sequence.
+        \item \textbf{Output}: The program correctly output \textbf{4.00}.
+        \item Manually sorting the data ($\{1, 1, 2, 2, 3, 3, \mathbf{4}, 4, 5, 5, 6, 7, 8\}$) confirms that 4 is indeed the median. This proves the partition logic handles odd-length combined arrays correctly.
+    \end{itemize}
+
+    \item \textbf{Conclusion}:
+    The Binary Search on Partition algorithm is the optimal choice for this scenario. It satisfies the strict requirement of no memory overhead while ensuring the high-speed processing required for financial transaction logs.
+\end{enumerate}
+
 \newpage
 
 \end{document}
