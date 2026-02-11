@@ -60,5 +60,33 @@ int main() {
     s1.ReadStudentData("Mrigaj", 20, "CST", 2028);
     s1.PrintStudentData();
 
+    std::ofstream file("students.txt");
+
+    if (s1.PrintStudentData(file))
+        std::cout << "Succesfully wrote student data to file students.txt"
+                  << std::endl;
+    else {
+        std::cout << "[ERROR] Could not write to file!" << std::endl;
+        return -1;
+    }
+
+    file.close();
+
+    Student s2;
+
+    std::ifstream inputFile("students.txt");
+
+    if (s2.ReadStudentData(inputFile)) {
+        std::cout << "[SUCCESS] Data read from file into s2" << std::endl;
+    } else {
+        std::cout << "[ERROR] Could not read from the file" << std::endl;
+        return -1;
+    }
+
+    inputFile.close();
+
+    std::cout << "Student details loaded from file: " << std::endl;
+    s2.PrintStudentData();
+
     return 0;
 }
