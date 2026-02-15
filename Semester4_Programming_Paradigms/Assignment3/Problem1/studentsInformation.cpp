@@ -109,6 +109,8 @@ int main() {
 
     fileOutput.close();
 
+    std::cout << std::endl;
+
     std::cout << "Verifying data by reading back from file: " << std::endl;
     std::ifstream fileInput("students.txt");
 
