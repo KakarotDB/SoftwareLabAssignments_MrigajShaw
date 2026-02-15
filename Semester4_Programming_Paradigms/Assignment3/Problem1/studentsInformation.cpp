@@ -1,5 +1,7 @@
 #include <fstream>
+#include <ios>
 #include <iostream>
+#include <limits>
 #include <string>
 
 namespace studentManagementSystem {
@@ -25,9 +27,13 @@ class Student {
         m_year = year;
     }
 
-    bool ReadStudentData(std::ifstream &file) {
-        if (file.is_open()) {
-            file >> m_name >> m_age >> m_department >> m_year;
+    bool ReadStudentData(std::ifstream &fileInput) {
+        if (fileInput.is_open()) {
+            std::getline(fileInput, m_name);
+            fileInput >> m_age >> m_department >> m_year;
+            // Clears newline left by last integer read in file
+            // so next student's name is read correctly
+            fileInput.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             return true;
         } else
             return false;
@@ -44,8 +50,9 @@ class Student {
 
     bool PrintStudentData(std::ofstream &fileOutput) {
         if (fileOutput.is_open()) {
-            fileOutput << m_name << " " << m_age << " " << m_department << " "
-                       << m_year << " " << std::endl;
+            fileOutput << m_name << std::endl;
+            fileOutput << m_age << " " << m_department << " " << m_year << " "
+                       << std::endl;
             return true;
         } else
             return false;
@@ -55,38 +62,67 @@ class Student {
 
 int main() {
     using namespace studentManagementSystem;
+    int n = 0;
+    Student *students = NULL;
+    std::string name;
+    int age;
+    std::string department;
+    int year;
 
-    Student s1;
-    s1.ReadStudentData("Mrigaj", 20, "CST", 2028);
-    s1.PrintStudentData();
+    std::cout << "Enter number of students: ";
+    std::cin >> n;
 
-    std::ofstream file("students.txt");
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-    if (s1.PrintStudentData(file))
-        std::cout << "Succesfully wrote student data to file students.txt"
-                  << std::endl;
-    else {
-        std::cout << "[ERROR] Could not write to file!" << std::endl;
+    students = new Student[n];
+
+    if (!students) {
+        std::cout << "Memory allocation failed!" << std::endl;
         return -1;
     }
 
-    file.close();
+    for (int i = 0; i < n; i++) {
+        std::cout << "Enter data for student " << i + 1 << std::endl;
 
-    Student s2;
+        std::cout << "Name: ";
+        std::getline(std::cin, name);
 
-    std::ifstream inputFile("students.txt");
+        std::cout << "Age: ";
+        std::cin >> age;
 
-    if (s2.ReadStudentData(inputFile)) {
-        std::cout << "[SUCCESS] Data read from file into s2" << std::endl;
-    } else {
-        std::cout << "[ERROR] Could not read from the file" << std::endl;
-        return -1;
+        std::cout << "Department: ";
+        std::cin >> department;
+
+        std::cout << "Year: ";
+        std::cin >> year;
+
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+        students[i].ReadStudentData(name, age, department, year);
     }
 
-    inputFile.close();
+    std::cout << "Saving students to file students.txt" << std::endl;
+    std::ofstream fileOutput("students.txt");
 
-    std::cout << "Student details loaded from file: " << std::endl;
-    s2.PrintStudentData();
+    for (int i = 0; i < n; i++)
+        students[i].PrintStudentData(fileOutput);
+
+    fileOutput.close();
+
+    std::cout << "Verifying data by reading back from file: " << std::endl;
+    std::ifstream fileInput("students.txt");
+
+    Student tempStudent;
+
+    for (int i = 0; i < n; i++) {
+        if (tempStudent.ReadStudentData(fileInput)) {
+            tempStudent.PrintStudentData();
+        }
+    }
+
+    fileInput.close();
+
+    delete[] students;
 
     return 0;
 }
