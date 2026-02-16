@@ -28,7 +28,7 @@ class GrowingStack {
 
     int getCapacity() const { return currentCapacity; }
 
-    bool inflate(int amount = 16);
+    bool inflate(int amount = sizeExtend);
     bool push(int value);
     bool pop(int &poppedValue);
     void display() const;
