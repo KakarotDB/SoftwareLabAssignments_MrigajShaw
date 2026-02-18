@@ -10,6 +10,7 @@ class Student {
     int m_age;
     std::string m_department;
     int m_year;
+	static Student* pool;
 
   public:
     Student() {
@@ -18,6 +19,9 @@ class Student {
         m_department = "";
         m_year = 0;
     }
+
+	static bool createStudentMemoryPool(int n);
+	static bool deleteStudentMemoryPool();
     void ReadStudentData(std::string name, int age, std::string department,
                          int year) {
         m_name = name;
@@ -57,6 +61,12 @@ class Student {
             return false;
     }
 };
+
+Student::pool = NULL;
+Student::createStudentMemoryPool(int n) {
+	pool = new Student [n];
+}
+
 } // namespace studentManagementSystem
 
 int main() {
