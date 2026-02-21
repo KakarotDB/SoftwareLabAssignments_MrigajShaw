@@ -2,6 +2,7 @@
 #include <ios>
 #include <iostream>
 #include <limits>
+#include <new>
 #include <string>
 
 namespace studentManagementSystem {
@@ -10,18 +11,20 @@ class Student {
     int m_age;
     std::string m_department;
     int m_year;
-	static Student* pool;
+
+    static Student *pool;
+    static bool *freeSlots;
+    static int poolSize;
+    static int nextFreeIndex;
 
   public:
-    Student() {
-        m_name = "";
-        m_age = 0;
-        m_department = "";
-        m_year = 0;
-    }
+    Student() : m_name(""), m_age(0), m_department(""), m_year(0) {}
 
-	static bool createStudentMemoryPool(int n);
-	static bool deleteStudentMemoryPool();
+    static bool createStudentMemoryPool(int n = 100);
+    static void deleteStudentMemoryPool();
+    void *operator new(size_t size);
+    void operator delete(void *pointer);
+
     void ReadStudentData(std::string name, int age, std::string department,
                          int year) {
         m_name = name;
@@ -62,9 +65,80 @@ class Student {
     }
 };
 
-Student::pool = NULL;
-Student::createStudentMemoryPool(int n) {
-	pool = new Student [n];
+Student *Student::pool = nullptr;
+bool *Student::freeSlots = nullptr;
+int Student::poolSize = 0;
+int Student::nextFreeIndex = 0;
+
+bool Student::createStudentMemoryPool(int n) {
+    if (n <= 0)
+        return false;
+
+    if (pool != nullptr) {
+        deleteStudentMemoryPool();
+    }
+
+    poolSize = n;
+    pool = static_cast<Student *>(
+        ::operator new[](n * sizeof(Student), std::nothrow));
+    freeSlots = new (std::nothrow) bool[n];
+
+    if (freeSlots == nullptr) {
+        ::operator delete[](pool);
+        pool = nullptr;
+        poolSize = 0;
+        return false;
+    }
+
+    for (int i = 0; i < n; i++) {
+        freeSlots[i] = true;
+    }
+    nextFreeIndex = 0;
+
+    return true;
+}
+
+void Student::deleteStudentMemoryPool() {
+    if (!pool)
+        return;
+
+    ::operator delete[](pool);
+    delete[] freeSlots;
+    pool = nullptr;
+    freeSlots = nullptr;
+}
+
+void *Student::operator new(size_t size) {
+    if (!pool) {
+        throw std::bad_alloc();
+    }
+
+    for (int i = 0; i < poolSize; i++) {
+        int index = (nextFreeIndex + i) % poolSize;
+
+        if (freeSlots[index]) {
+            freeSlots[index] = false;
+            nextFreeIndex = (index + 1) % poolSize;
+            return &pool[index];
+        }
+    }
+
+    throw std::bad_alloc();
+}
+
+void Student::operator delete(void *pointer) {
+    if (!pool || !pointer) {
+        return;
+    }
+
+    Student *ptr = static_cast<Student *>(pointer);
+    if (ptr < pool || ptr >= pool + poolSize) {
+        ::operator delete(pointer);
+        return;
+    }
+
+    int index = ptr - pool;
+    freeSlots[index] = true;
 }
 
 } // namespace studentManagementSystem
@@ -72,7 +146,7 @@ Student::createStudentMemoryPool(int n) {
 int main() {
     using namespace studentManagementSystem;
     int n = 0;
-    Student *students = NULL;
+    Student *students = nullptr;
     std::string name;
     int age;
     std::string department;
