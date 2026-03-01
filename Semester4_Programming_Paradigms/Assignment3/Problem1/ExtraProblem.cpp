@@ -142,11 +142,9 @@ void Student::operator delete(void *pointer) {
 }
 
 } // namespace studentManagementSystem
-
 int main() {
     using namespace studentManagementSystem;
     int n = 0;
-    Student *students = nullptr;
     std::string name;
     int age;
     std::string department;
@@ -154,17 +152,19 @@ int main() {
 
     std::cout << "Enter number of students: ";
     std::cin >> n;
-
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-    students = new Student[n];
-
-    if (!students) {
-        std::cout << "Memory allocation failed!" << std::endl;
+    if (!Student::createStudentMemoryPool(n)) {
+        std::cout << "Memory pool creation failed!" << std::endl;
         return -1;
     }
 
+    std::cout << "Memory pool created for " << n << " students." << std::endl;
+
+    Student **students = new Student *[n];
+
     for (int i = 0; i < n; i++) {
+        students[i] = new Student(); // calls overloaded operator new
         std::cout << "Enter data for student " << i + 1 << std::endl;
 
         std::cout << "Name: ";
@@ -181,33 +181,33 @@ int main() {
 
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-        students[i].ReadStudentData(name, age, department, year);
+        students[i]->ReadStudentData(name, age, department, year);
     }
 
-    std::cout << "Saving students to file students.txt" << std::endl;
+    std::cout << "\nSaving students to file students.txt" << std::endl;
     std::ofstream fileOutput("students.txt");
-
     for (int i = 0; i < n; i++)
-        students[i].PrintStudentData(fileOutput);
-
+        students[i]->PrintStudentData(fileOutput);
     fileOutput.close();
 
-    std::cout << std::endl;
-
-    std::cout << "Verifying data by reading back from file: " << std::endl;
+    std::cout << "\nVerifying data by reading back from file:" << std::endl;
     std::ifstream fileInput("students.txt");
-
     Student tempStudent;
-
     for (int i = 0; i < n; i++) {
-        if (tempStudent.ReadStudentData(fileInput)) {
+        if (tempStudent.ReadStudentData(fileInput))
             tempStudent.PrintStudentData();
-        }
     }
-
     fileInput.close();
 
-    delete[] students;
+    std::cout << "\nFreeing all students from pool:" << std::endl;
+    for (int i = 0; i < n; i++) {
+        delete students[i]; // calls overloaded operator delete for each
+    }
+
+    delete[] students; // this is just the pointer array, not pool-allocated
+
+    Student::deleteStudentMemoryPool();
+    std::cout << "Memory pool destroyed." << std::endl;
 
     return 0;
 }
