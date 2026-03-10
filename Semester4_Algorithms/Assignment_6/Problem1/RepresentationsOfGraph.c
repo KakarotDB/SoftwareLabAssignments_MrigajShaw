@@ -20,8 +20,7 @@ Node **createAdjacencyList(int vertices) {
 bool addEdgeAdjacencyListDirectedWithoutWeight(Node **list, int u, int v) {
     if (list == NULL)
         return false;
-
-    Node *newNode = (Node *)malloc(sizeof(Node));
+	Node *newNode = (Node *)malloc(sizeof(Node));
     if (!newNode)
         return false;
 
@@ -78,7 +77,7 @@ void displayAdjacencyList(Node **list, int vertices) {
             printf("%d(w:%d) -> ", temp->vertex, temp->weight);
             temp = temp->next;
         }
-        printf("NULL\n");
+    printf("NULL\n");
     }
     printf("------------------------------------\n");
 }
@@ -104,23 +103,29 @@ int main() {
     srand(time(NULL));
     Node **list = createAdjacencyList(n);
 
+	//Adjacency list
     for (int i = 0; i < n; i++) {
         int u = rand() % 100;
         int v = rand() % 100;
-        addEdgeAdjacencyListDirectedWithoutWeight(list, u, v);
+        addEdgeAdjacencyListUnDirectedWithoutWeight(list, u, v);
     }
 
     displayAdjacencyList(list, n);
 
-    for (int i = 0; i < n; i++) {
+	int edges_sparse = 120;
+    for (int i = 0; i < edges_sparse; i++) {
         int u = rand() % 100;
         int v = rand() % 100;
         int weight = rand() % 50 + 1;
-        addEdgeAdjacencyListDirectedWithWeight(list, u, v, weight);
+        addEdgeAdjacencyListUnDirectedWithWeight(list, u, v, weight);
     }
 
     displayAdjacencyList(list, n);
 
     freeAdjacencyList(list, n);
+
+	//Adjacency Matrix 
+	
+		
     return 0;
 }
