@@ -109,6 +109,7 @@ void Student::deleteStudentMemoryPool() {
 }
 
 void *Student::operator new(size_t size) {
+	//TODO : Handle when the pool is full or empty for new and delete
     if (!pool) {
         throw std::bad_alloc();
     }

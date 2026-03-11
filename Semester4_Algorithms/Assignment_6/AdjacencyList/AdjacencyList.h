@@ -1,8 +1,8 @@
-#include <stdbool.h>
+#ifndef ADJACENCY_LIST_H
+
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
-
+#include <stdbool.h>
 
 typedef struct Node {
     struct Node *next;
@@ -98,44 +98,4 @@ void freeAdjacencyList(Node **list, int vertices) {
     free(list);
 }
 
-void displayAdjacencyMatrix(int matrix[100][100]);
-
-int main() {
-    int n = 100; // number of vertices
-    // the vertices are [0, 99];
-    srand(time(NULL));
-    Node **list = createAdjacencyList(n);
-
-	//Adjacency list
-    for (int i = 0; i < n; i++) {
-        int u = rand() % 100;
-        int v = rand() % 100;
-        addEdgeAdjacencyListUnDirectedWithoutWeight(list, u, v);
-    }
-
-    displayAdjacencyList(list, n);
-
-	int edges_sparse = 120;
-    for (int i = 0; i < edges_sparse; i++) {
-        int u = rand() % 100;
-        int v = rand() % 100;
-        int weight = rand() % 50 + 1;
-        addEdgeAdjacencyListUnDirectedWithWeight(list, u, v, weight);
-    }
-
-    displayAdjacencyList(list, n);
-
-    freeAdjacencyList(list, n);
-
-	//Adjacency Matrix 
-	int adjacencyMatrix[n][n]; 
-	int edges_matrix = 4500;
-	for(int i = 0; i < edges_matrix; i++) {
-		int u = rand() % 100;
-		int v = rand() % 100;
-		adjacencyMatrix[u][v] = 1;
-		adjacencyMatrix[v][u] = 1;
-	}	
-	displayAdjacencyMatrix(adjacencyMatrix);
-    return 0;
-}
+#endif //ADJACENCY_LIST_H
