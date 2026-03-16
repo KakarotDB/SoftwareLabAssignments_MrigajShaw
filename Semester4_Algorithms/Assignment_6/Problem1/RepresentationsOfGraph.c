@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <time.h>
 
-
 typedef struct Node {
     struct Node *next;
     int vertex;
@@ -21,7 +20,7 @@ Node **createAdjacencyList(int vertices) {
 bool addEdgeAdjacencyListDirectedWithoutWeight(Node **list, int u, int v) {
     if (list == NULL)
         return false;
-	Node *newNode = (Node *)malloc(sizeof(Node));
+    Node *newNode = (Node *)malloc(sizeof(Node));
     if (!newNode)
         return false;
 
@@ -78,7 +77,7 @@ void displayAdjacencyList(Node **list, int vertices) {
             printf("%d(w:%d) -> ", temp->vertex, temp->weight);
             temp = temp->next;
         }
-    printf("NULL\n");
+        printf("NULL\n");
     }
     printf("------------------------------------\n");
 }
@@ -98,7 +97,28 @@ void freeAdjacencyList(Node **list, int vertices) {
     free(list);
 }
 
-void displayAdjacencyMatrix(int matrix[100][100]);
+void displayAdjacencyMatrix(int matrix[100][100]) {
+    int n = 100;
+    int limit = 15;
+    printf("\nAdjacency Matrix (Showing top %dx%d for readability)\n", limit,
+           limit);
+    printf("---------------------------------------------------\n");
+
+    // Print column headers
+    printf("     ");
+    for (int i = 0; i < limit; i++) {
+        printf("%2d ", i);
+    }
+    printf("...\n");
+    for (int i = 0; i < limit; i++) {
+        printf("%3d |", i);
+        for (int j = 0; j < limit; j++) {
+            printf(matrix[i][j] ? " 1 " : " . ");
+        }
+        printf("...\n");
+    }
+    printf("...\n(Remaining %d rows and columns hidden)\n", n - limit);
+}
 
 int main() {
     int n = 100; // number of vertices
@@ -106,7 +126,7 @@ int main() {
     srand(time(NULL));
     Node **list = createAdjacencyList(n);
 
-	//Adjacency list
+    // Adjacency list
     for (int i = 0; i < n; i++) {
         int u = rand() % 100;
         int v = rand() % 100;
@@ -115,7 +135,7 @@ int main() {
 
     displayAdjacencyList(list, n);
 
-	int edges_sparse = 120;
+    int edges_sparse = 120;
     for (int i = 0; i < edges_sparse; i++) {
         int u = rand() % 100;
         int v = rand() % 100;
@@ -127,15 +147,15 @@ int main() {
 
     freeAdjacencyList(list, n);
 
-	//Adjacency Matrix 
-	int adjacencyMatrix[n][n]; 
-	int edges_matrix = 4500;
-	for(int i = 0; i < edges_matrix; i++) {
-		int u = rand() % 100;
-		int v = rand() % 100;
-		adjacencyMatrix[u][v] = 1;
-		adjacencyMatrix[v][u] = 1;
-	}	
-	displayAdjacencyMatrix(adjacencyMatrix);
+    // Adjacency Matrix
+    int adjacencyMatrix[100][100] = {0}; // Fills the entire matrix with 0s
+    int edges_matrix = 4500;
+    for (int i = 0; i < edges_matrix; i++) {
+        int u = rand() % 100;
+        int v = rand() % 100;
+        adjacencyMatrix[u][v] = 1;
+        adjacencyMatrix[v][u] = 1;
+    }
+    displayAdjacencyMatrix(adjacencyMatrix);
     return 0;
 }
