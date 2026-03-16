@@ -114,11 +114,6 @@ def generate_latex():
             for code_file in code_files:
                 # LaTeX requires forward slashes for paths
                 file_path = f"{p_dir}/{code_file}"
-                
-                # Escape underscores in filenames for the caption label
-                caption_name = code_file.replace('_', '\\_')
-                
-                # latex_content += f"\\textbf{{File: {caption_name}}}\n"
                 latex_content += f"\\lstinputlisting[language=C]{{{file_path}}}\n"
 
         # --- PROCESS IMAGE FILES ---
@@ -133,12 +128,24 @@ def generate_latex():
                 latex_content += f"    \\includegraphics[width=0.9\\textwidth]{{{file_path}}}\n"
                 latex_content += "\\end{figure}\n"
 
+        # --- PROCESS INFERENCE ---
+        latex_content += f"\\subsection*{{Inference}}\n"
+        inference_path = os.path.join(p_dir, "inference.txt")
+        
+        if os.path.exists(inference_path):
+            with open(inference_path, "r", encoding="utf-8") as inf_file:
+                inference_text = inf_file.read().strip()
+                # Adding the text from the file directly into the LaTeX document
+                latex_content += f"{inference_text}\n\n"
+        else:
+            latex_content += "Write your inference or observations for this problem here.\n\n"
+
         latex_content += "\\newpage\n"
 
     latex_content += LATEX_FOOTER
 
     # Write output
-    with open(OUTPUT_FILENAME, "w") as f:
+    with open(OUTPUT_FILENAME, "w", encoding="utf-8") as f:
         f.write(latex_content)
     
     print(f"Success! Scanned {len(problem_dirs)} problem folders.")
