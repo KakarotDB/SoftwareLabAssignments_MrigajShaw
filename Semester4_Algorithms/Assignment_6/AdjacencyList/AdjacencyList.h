@@ -1,8 +1,9 @@
 #ifndef ADJACENCY_LIST_H
+#define ADJACENCY_LIST_H
 
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 
 typedef struct Node {
     struct Node *next;
@@ -21,7 +22,7 @@ Node **createAdjacencyList(int vertices) {
 bool addEdgeAdjacencyListDirectedWithoutWeight(Node **list, int u, int v) {
     if (list == NULL)
         return false;
-	Node *newNode = (Node *)malloc(sizeof(Node));
+    Node *newNode = (Node *)malloc(sizeof(Node));
     if (!newNode)
         return false;
 
@@ -78,7 +79,7 @@ void displayAdjacencyList(Node **list, int vertices) {
             printf("%d(w:%d) -> ", temp->vertex, temp->weight);
             temp = temp->next;
         }
-    printf("NULL\n");
+        printf("NULL\n");
     }
     printf("------------------------------------\n");
 }
@@ -98,4 +99,4 @@ void freeAdjacencyList(Node **list, int vertices) {
     free(list);
 }
 
-#endif //ADJACENCY_LIST_H
+#endif // ADJACENCY_LIST_H
