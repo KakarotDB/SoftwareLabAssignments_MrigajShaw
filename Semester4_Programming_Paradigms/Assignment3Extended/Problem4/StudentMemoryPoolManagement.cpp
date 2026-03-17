@@ -37,8 +37,6 @@ class Student {
         if (fileInput.is_open()) {
             std::getline(fileInput, m_name);
             fileInput >> m_age >> m_department >> m_year;
-            // Clears newline left by last integer read in file
-            // so next student's name is read correctly
             fileInput.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             return true;
         } else
@@ -109,22 +107,19 @@ void Student::deleteStudentMemoryPool() {
 }
 
 void *Student::operator new(size_t size) {
-	//TODO : Handle when the pool is full or empty for new and delete
-    if (!pool) {
-        throw std::bad_alloc();
-    }
-
-    for (int i = 0; i < poolSize; i++) {
-        int index = (nextFreeIndex + i) % poolSize;
-
-        if (freeSlots[index]) {
-            freeSlots[index] = false;
-            nextFreeIndex = (index + 1) % poolSize;
-            return &pool[index];
+    if (pool) {
+        for (int i = 0; i < poolSize; i++) {
+            int index = (nextFreeIndex + i) % poolSize;
+            if (freeSlots[index]) {
+                freeSlots[index] = false;
+                nextFreeIndex = (index + 1) % poolSize;
+                return &pool[index];
+            }
         }
     }
-
-    throw std::bad_alloc();
+    // pool is full or doesn't exist — fall back to heap
+    std::cout << "[Warning] Pool unavailable or full. Allocating from heap.\n";
+    return ::operator new(size);
 }
 
 void Student::operator delete(void *pointer) {
@@ -143,6 +138,7 @@ void Student::operator delete(void *pointer) {
 }
 
 } // namespace studentManagementSystem
+
 int main() {
     using namespace studentManagementSystem;
     int n = 0;
@@ -165,7 +161,7 @@ int main() {
     Student **students = new Student *[n];
 
     for (int i = 0; i < n; i++) {
-        students[i] = new Student(); // calls overloaded operator new
+        students[i] = new Student();
         std::cout << "Enter data for student " << i + 1 << std::endl;
 
         std::cout << "Name: ";
@@ -185,6 +181,13 @@ int main() {
         students[i]->ReadStudentData(name, age, department, year);
     }
 
+    // Allocate one extra student beyond pool capacity to trigger heap fallback
+    std::cout
+        << "\nAllocating one extra student beyond pool to test fallback:\n";
+    Student *extraStudent = new Student();
+    extraStudent->ReadStudentData("Extra Student", 99, "TestDept", 5);
+    extraStudent->PrintStudentData();
+
     std::cout << "\nSaving students to file students.txt" << std::endl;
     std::ofstream fileOutput("students.txt");
     for (int i = 0; i < n; i++)
@@ -202,13 +205,43 @@ int main() {
 
     std::cout << "\nFreeing all students from pool:" << std::endl;
     for (int i = 0; i < n; i++) {
-        delete students[i]; // calls overloaded operator delete for each
+        delete students[i];
     }
+    delete extraStudent; // heap-allocated, routed to ::operator delete
 
-    delete[] students; // this is just the pointer array, not pool-allocated
+    delete[] students;
 
     Student::deleteStudentMemoryPool();
     std::cout << "Memory pool destroyed." << std::endl;
+
+    // Heap Fallback Demonstration
+    std::cout << "\nHeap Fallback Demonstration" << std::endl;
+    std::cout << "Creating a small pool of size 3 to fill it quickly."
+              << std::endl;
+    Student::createStudentMemoryPool(3);
+
+    Student *d1 = new Student(); // pool slot 0
+    Student *d2 = new Student(); // pool slot 1
+    Student *d3 = new Student(); // pool slot 2 — pool now full
+
+    std::cout << "Pool full. Allocating one more student:" << std::endl;
+    Student *d4 = new Student(); // triggers [Warning], goes to heap
+
+    std::cout << "\nFreeing pool slot 0 and reallocating:" << std::endl;
+    std::cout << "d1 address (pool slot 0): " << (void *)d1 << std::endl;
+    delete d1;
+    Student *d5 = new Student(); // should reclaim slot 0
+    std::cout << "d5 address (should match d1): " << (void *)d5 << std::endl;
+    if (d5 == d1)
+        std::cout << "[Confirmed] d5 reclaimed d1's pool slot." << std::endl;
+    else
+        std::cout << "[Unexpected] d5 did NOT reclaim d1's slot." << std::endl;
+    delete d2;
+    delete d3;
+    delete d4;
+    delete d5;
+    Student::deleteStudentMemoryPool();
+    std::cout << "End of Demonstration" << std::endl;
 
     return 0;
 }
