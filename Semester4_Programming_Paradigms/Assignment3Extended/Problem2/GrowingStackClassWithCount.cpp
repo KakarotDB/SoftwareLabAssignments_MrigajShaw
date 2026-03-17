@@ -202,7 +202,7 @@ int main() {
     else
         cout << "Stack 5 created successfully.\n";
 
-    // This should fail — limit of 5 already reached
+    // This should fail - limit of 5 already reached
     GrowingStack stack6;
     if (!stack6.isValid())
         cout << "stack6 creation failed: stack limit reached.\n";

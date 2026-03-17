@@ -117,7 +117,7 @@ void *Student::operator new(size_t size) {
             }
         }
     }
-    // pool is full or doesn't exist — fall back to heap
+    // pool is full or doesn't exist - fall back to heap
     std::cout << "[Warning] Pool unavailable or full. Allocating from heap.\n";
     return ::operator new(size);
 }
@@ -222,7 +222,7 @@ int main() {
 
     Student *d1 = new Student(); // pool slot 0
     Student *d2 = new Student(); // pool slot 1
-    Student *d3 = new Student(); // pool slot 2 — pool now full
+    Student *d3 = new Student(); // pool slot 2 - pool now full
 
     std::cout << "Pool full. Allocating one more student:" << std::endl;
     Student *d4 = new Student(); // triggers [Warning], goes to heap
