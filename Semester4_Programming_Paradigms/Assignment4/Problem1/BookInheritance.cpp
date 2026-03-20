@@ -52,6 +52,7 @@ class Book {
 
         std::cout << "Enter number of pages of book: ";
         std::cin >> m_pages;
+        std::cin.ignore();
     }
 
     virtual void displayBookData() {
@@ -97,12 +98,13 @@ class EBook : public Book {
 
         std::cout << "Enter file size (MB): ";
         std::cin >> m_fileSizeMB;
+        std::cin.ignore();
 
         char buffer[256];
 
         std::cout << "Enter file format (PDF/EPUB etc): ";
-        std::cin.ignore();
         std::cin >> buffer;
+        std::cin.ignore();
 
         delete[] m_format;
         m_format = stringUtils::cloneString(buffer);
@@ -121,28 +123,44 @@ int main() {
     using namespace bookManagementSystem;
     using namespace std;
 
-    cout << "Testing book class" << endl;
-
+    cout << "Testing out book class" << endl;
     Book b1;
+    b1.readBookData();
     b1.displayBookData();
 
-    Book b2("Title of a book (b2)", 200);
+    Book b2(b1);
+    cout << "Copy constructor of book: " << endl;
     b2.displayBookData();
 
-    cout << "Copy constructor in action: " << endl;
-
-    Book b3 = b2;
-    cout << "b3 = b2 OR b3(b2)" << endl;
+    Book b3;
+    b3 = b2;
+    cout << "Assignment operator: " << endl;
     b3.displayBookData();
 
-    cout << "Assignment operator in action: " << endl;
-    Book b4;
-    b4 = b3;
-    b4.displayBookData();
+    cout << "----------------------------" << endl;
 
-    Book b5;
+    cout << "Testing out EBook class: " << endl;
 
-    cout << "Reading book data..." << endl;
-    b5.readBookData();
-    b5.displayBookData();
+    EBook e1;
+    e1.readBookData();
+    e1.displayBookData();
+
+    cout << "Copy constructor of EBook: " << endl;
+    EBook e2 = e1;
+    e1.displayBookData();
+
+    cout << "Assignment operator of EBook: " << endl;
+    EBook e3;
+    e3 = e1;
+    e3.displayBookData();
+
+    cout << "Testing polymorphism via pointers (Book* -> EBook): " << endl;
+
+    Book *ptr = new EBook();
+
+    ptr->readBookData();
+    ptr->displayBookData();
+    delete ptr;
+
+    return 0;
 }
