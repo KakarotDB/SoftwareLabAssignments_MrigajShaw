@@ -65,24 +65,84 @@ class EBook : public Book {
     char *m_format;
 
   public:
-    EBook(double fileSizeMB = 0.0, const char *format = "N\\A")
+    EBook(double fileSizeMB = 0.0, const char *format = "N/A")
         : m_fileSizeMB(fileSizeMB) {
         m_format = stringUtils::cloneString(format);
     }
 
     EBook(const EBook &other) : Book(other), m_fileSizeMB(other.m_fileSizeMB) {
+        m_format = stringUtils::cloneString(other.m_format);
+    }
+
+    const EBook &operator=(const EBook &other) {
+        if (this == &other)
+            return *this;
+
+        Book::operator=(other);
+
+        m_fileSizeMB = other.m_fileSizeMB;
         delete[] m_format;
         m_format = stringUtils::cloneString(other.m_format);
+
+        return *this;
+    }
+
+    ~EBook() override {
+        delete[] m_format;
+        m_format = nullptr;
+    }
+
+    void readBookData() override {
+        Book::readBookData();
+
+        std::cout << "Enter file size (MB): ";
+        std::cin >> m_fileSizeMB;
+
+        char buffer[256];
+
+        std::cout << "Enter file format (PDF/EPUB etc): ";
+        std::cin.ignore();
+        std::cin >> buffer;
+
+        delete[] m_format;
+        m_format = stringUtils::cloneString(buffer);
+    }
+
+    void displayBookData() override {
+        Book::displayBookData();
+
+        std::cout << "File size: " << m_fileSizeMB << " MB" << std::endl;
+        std::cout << "File format: " << m_format << std::endl;
     }
 };
 } // namespace bookManagementSystem
 
 int main() {
     using namespace bookManagementSystem;
+    using namespace std;
+
+    cout << "Testing book class" << endl;
+
     Book b1;
     b1.displayBookData();
-    b1.readBookData();
-    b1.displayBookData();
 
-    EBook b2;
+    Book b2("Title of a book (b2)", 200);
+    b2.displayBookData();
+
+    cout << "Copy constructor in action: " << endl;
+
+    Book b3 = b2;
+    cout << "b3 = b2 OR b3(b2)" << endl;
+    b3.displayBookData();
+
+    cout << "Assignment operator in action: " << endl;
+    Book b4;
+    b4 = b3;
+    b4.displayBookData();
+
+    Book b5;
+
+    cout << "Reading book data..." << endl;
+    b5.readBookData();
+    b5.displayBookData();
 }
