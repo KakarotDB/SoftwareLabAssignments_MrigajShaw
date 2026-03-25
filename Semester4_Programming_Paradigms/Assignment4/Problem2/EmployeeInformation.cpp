@@ -39,7 +39,6 @@ class Employee : virtual public Person {
           m_salary(salary) {}
 
     void read() override {
-        Person::read();
         std::cout << "Enter employee ID: ";
         std::cin >> m_employee_ID;
 
@@ -48,7 +47,6 @@ class Employee : virtual public Person {
     }
 
     void display() const override {
-        Person::display();
         std::cout << "Employee ID: " << m_employee_ID << std::endl
                   << "Salary: " << m_salary << std::endl;
     }
@@ -67,8 +65,6 @@ class Specialist : virtual public Person {
           m_skillset(skillset) {}
 
     void read() override {
-        Person::read();
-
         std::cout << "Enter department: ";
         std::getline(std::cin, m_department);
         std::cout << "Enter skillset: ";
@@ -76,7 +72,6 @@ class Specialist : virtual public Person {
     }
 
     void display() const override {
-        Person::display();
         std::cout << "Department: " << m_department << std::endl
                   << "Skillset: " << m_skillset << std::endl;
     }
