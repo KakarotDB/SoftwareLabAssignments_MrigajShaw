@@ -2,6 +2,7 @@
 #include <string>
 
 namespace EmployeeInformationSystem {
+
 class Person {
   protected:
     std::string m_name;
@@ -20,13 +21,13 @@ class Person {
         std::cout << "Enter gender: ";
         std::cin >> m_gender;
     }
+
     virtual void display() const {
         std::cout << "Name: " << m_name << std::endl
                   << "Age: " << m_age << std::endl
                   << "Gender: " << m_gender << std::endl;
     }
 };
-
 class Employee : virtual public Person {
   protected:
     int m_employee_ID;
@@ -41,7 +42,6 @@ class Employee : virtual public Person {
     void read() override {
         std::cout << "Enter employee ID: ";
         std::cin >> m_employee_ID;
-
         std::cout << "Enter employee salary: ";
         std::cin >> m_salary;
     }
@@ -51,7 +51,6 @@ class Employee : virtual public Person {
                   << "Salary: " << m_salary << std::endl;
     }
 };
-
 class Specialist : virtual public Person {
   protected:
     std::string m_department;
@@ -76,7 +75,6 @@ class Specialist : virtual public Person {
                   << "Skillset: " << m_skillset << std::endl;
     }
 };
-
 class Developer : public Employee, public Specialist {
   protected:
     std::string m_project;
@@ -95,6 +93,7 @@ class Developer : public Employee, public Specialist {
     void read() override {
         Person::read();
         Employee::read();
+        std::cin.ignore();
         Specialist::read();
         std::cout << "Enter project: ";
         std::getline(std::cin, m_project);
@@ -106,18 +105,15 @@ class Developer : public Employee, public Specialist {
         Person::display();
         Employee::display();
         Specialist::display();
-
         std::cout << "Project: " << m_project << std::endl
                   << "Years of Experience: " << m_Years_Of_Experience
                   << std::endl;
     }
 };
 } // namespace EmployeeInformationSystem
-
 int main() {
     using namespace std;
     using namespace EmployeeInformationSystem;
-
     Developer d;
     d.read();
     d.display();
