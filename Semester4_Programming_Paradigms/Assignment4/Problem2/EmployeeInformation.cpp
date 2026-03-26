@@ -110,12 +110,112 @@ class Developer : public Employee, public Specialist {
                   << std::endl;
     }
 };
+
+class SystemAdmin : public Employee {
+  protected:
+    int m_WorkLoad; // workload in number of server tickets
+  public:
+    SystemAdmin(std::string name = "N/A", int age = 0,
+                std::string gender = "N/A", int employee_ID = -1,
+                double salary = 0.0, int WorkLoad = 0)
+        : Person(name, age, gender),
+          Employee(name, age, gender, employee_ID, salary),
+          m_WorkLoad(WorkLoad) {}
+
+    void read() override {
+        Person::read();
+        Employee::read();
+
+        std::cout
+            << "Enter workLoad (number of server tickets) as an integer: ";
+        std::cin >> m_WorkLoad;
+    }
+
+    void display() const override {
+        Person::display();
+        Employee::display();
+
+        std::cout << "WorkLoad: " << m_WorkLoad << std::endl;
+    }
+};
+
+class Trainee : public Specialist {
+  protected:
+    int m_duration; // duration in days
+    double m_stipend;
+
+  public:
+    Trainee(std::string name = "N/A", int age = 0, std::string gender = "N/A",
+            std::string department = "N/A", std::string skillset = "N/A",
+            int duration = 0, int stipend = 0)
+        : Person(name, age, gender),
+          Specialist(name, age, gender, department, skillset),
+          m_duration(duration), m_stipend(stipend) {};
+
+    void read() override {
+        Person::read();
+        std::cin.ignore();
+        Specialist::read();
+
+        std::cout << "Enter duration in days: ";
+        std::cin >> m_duration;
+        std::cout << "Enter stipend in INR: ";
+        std::cin >> m_stipend;
+    }
+
+    void display() const override {
+        Person::display();
+        Specialist::display();
+
+        std::cout << "Duration: " << m_duration << " days" << std::endl
+                  << "Stipend: " << m_stipend << std::endl;
+    }
+};
 } // namespace EmployeeInformationSystem
 int main() {
     using namespace std;
     using namespace EmployeeInformationSystem;
-    Developer d;
-    d.read();
-    d.display();
+
+    Developer dev("Alice Johnson", 29, "Female", 1001, 95000.0, "Engineering",
+                  "C++, Python, React", "Inventory Management System", 5);
+
+    SystemAdmin admin("Bob Smith", 35, "Male", 1002, 72000.0, 14);
+
+    Trainee trainee("Carol Das", 22, "Female", "Data Science", "Python, SQL",
+                    90, 15000);
+
+    cout << "Developer: " << endl;
+    dev.display();
+    cout << "---------------------" << endl;
+    cout << "SystemAdmin: " << endl;
+    admin.display();
+    cout << "---------------------" << endl;
+    cout << "Trainee: " << endl;
+    trainee.display();
+    cout << "---------------------" << endl;
+
+    cout << "Developer: " << endl;
+    Developer dev2;
+    dev2.read();
+    cout << "---------------------" << endl;
+    dev2.display();
+    cout << "---------------------" << endl;
+
+    cin.ignore();
+    cout << "Trainee: " << endl;
+    Trainee t;
+    t.read();
+    cout << "---------------------" << endl;
+    t.display();
+    cout << "---------------------" << endl;
+
+    cout << "SystemAdmin: " << endl;
+    SystemAdmin s;
+    cin.ignore();
+    s.read();
+    cout << "---------------------" << endl;
+    s.display();
+    cout << "---------------------" << endl;
+
     return 0;
 }
