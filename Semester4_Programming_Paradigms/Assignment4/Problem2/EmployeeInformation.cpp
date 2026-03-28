@@ -27,6 +27,8 @@ class Person {
                   << "Age: " << m_age << std::endl
                   << "Gender: " << m_gender << std::endl;
     }
+
+    virtual ~Person() = default;
 };
 class Employee : virtual public Person {
   protected:
