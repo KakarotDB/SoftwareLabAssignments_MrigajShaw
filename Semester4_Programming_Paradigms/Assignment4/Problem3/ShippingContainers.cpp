@@ -91,7 +91,6 @@ int main() {
              << " type (1=Box, 2=Cylinder, 3=Pyramid): ";
         cin >> choice;
 
-        // Much cleaner instantiation!
         if (choice == 1) {
             warehouse[i] = new Box();
         } else if (choice == 2) {
