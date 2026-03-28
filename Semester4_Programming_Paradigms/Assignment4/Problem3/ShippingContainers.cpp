@@ -14,7 +14,7 @@ class Box : public Container {
     double m_length, m_breadth, m_height;
 
   public:
-    Box(double length, double breadth, double height)
+    Box(double length = 0.0, double breadth = 0.0, double height = 0.0)
         : m_length(length), m_breadth(breadth), m_height(height) {}
 
     void read() override {
@@ -35,7 +35,7 @@ class Cylinder : public Container {
     double m_radius, m_height;
 
   public:
-    Cylinder(double radius, double height)
+    Cylinder(double radius = 0.0, double height = 0.0)
         : m_radius(radius), m_height(height) {}
 
     void read() override {
@@ -54,7 +54,7 @@ class Pyramid : public Container {
     double m_length, m_breadth, m_height;
 
   public:
-    Pyramid(double length, double breadth, double height)
+    Pyramid(double length = 0.0, double breadth = 0.0, double height = 0.0)
         : m_length(length), m_breadth(breadth), m_height(height) {}
 
     void read() override {
@@ -69,7 +69,7 @@ class Pyramid : public Container {
     }
 
     double Volume() const override {
-        return (m_length * m_breadth * m_height) / 3;
+        return (m_length * m_breadth * m_height) / 3.0;
     }
 };
 } // namespace WarehouseContainers
@@ -77,6 +77,7 @@ class Pyramid : public Container {
 int main() {
     using namespace std;
     using namespace WarehouseContainers;
+
     int n;
     cout << "All dimensions will be assumed to be in centimeters (cm)" << endl;
     cout << "How many containers are in the warehouse? ";
@@ -90,12 +91,13 @@ int main() {
              << " type (1=Box, 2=Cylinder, 3=Pyramid): ";
         cin >> choice;
 
+        // Much cleaner instantiation!
         if (choice == 1) {
-            warehouse[i] = new Box(0, 0, 0);
+            warehouse[i] = new Box();
         } else if (choice == 2) {
-            warehouse[i] = new Cylinder(0, 0);
+            warehouse[i] = new Cylinder();
         } else {
-            warehouse[i] = new Pyramid(0, 0, 0);
+            warehouse[i] = new Pyramid();
         }
 
         warehouse[i]->read();
@@ -106,7 +108,7 @@ int main() {
         totalVolume += warehouse[i]->Volume();
     }
 
-    cout << "\nTotal volume occupied: " << totalVolume << "\n";
+    cout << "\nTotal volume occupied: " << totalVolume << " cubic cm\n";
 
     for (int i = 0; i < n; i++) {
         delete warehouse[i];
