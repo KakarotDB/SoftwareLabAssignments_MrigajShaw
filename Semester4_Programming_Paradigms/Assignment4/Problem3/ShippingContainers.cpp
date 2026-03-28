@@ -77,14 +77,14 @@ class Pyramid : public Container {
 int main() {
     using namespace std;
     using namespace WarehouseContainers;
-    int numContainers;
+    int n;
     cout << "All dimensions will be assumed to be in centimeters (cm)" << endl;
     cout << "How many containers are in the warehouse? ";
-    cin >> numContainers;
+    cin >> n;
 
-    Container **warehouse = new Container *[numContainers];
+    Container **warehouse = new Container *[n];
 
-    for (int i = 0; i < numContainers; i++) {
+    for (int i = 0; i < n; i++) {
         int choice;
         cout << "\nContainer " << i + 1
              << " type (1=Box, 2=Cylinder, 3=Pyramid): ";
@@ -102,13 +102,13 @@ int main() {
     }
 
     double totalVolume = 0;
-    for (int i = 0; i < numContainers; i++) {
+    for (int i = 0; i < n; i++) {
         totalVolume += warehouse[i]->Volume();
     }
 
     cout << "\nTotal volume occupied: " << totalVolume << "\n";
 
-    for (int i = 0; i < numContainers; i++) {
+    for (int i = 0; i < n; i++) {
         delete warehouse[i];
     }
     delete[] warehouse;
