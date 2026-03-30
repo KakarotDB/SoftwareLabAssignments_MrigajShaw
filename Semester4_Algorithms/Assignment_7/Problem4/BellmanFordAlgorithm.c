@@ -61,7 +61,6 @@ int main() {
     if (scanf("%d", &E) != 1)
         return 1;
 
-    // Just allocate a flat array of edges directly in main
     Edge *edges = (Edge *)malloc(E * sizeof(Edge));
 
     printf("Enter %d edges (format: source destination weight):\n", E);
