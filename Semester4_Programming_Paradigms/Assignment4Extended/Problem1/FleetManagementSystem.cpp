@@ -3,7 +3,10 @@
 #include <thread>
 
 namespace FleetManagementSystem {
+enum class VehicleType { CAR, TRUCK, BUS };
+
 class Vehicle {
+  protected:
     int m_wheels;
     int m_seats;
     std::string m_fuel_type;
@@ -14,19 +17,63 @@ class Vehicle {
     std::string m_registration_number;
 
   public:
-    Vehicle(int wheels = 0, int seats = 0, std::string fuel_type = "N/A",
-            int maximum_fuel_capacity = 0, int current_fuel = 0,
-            int maximum_speed = 0, int total_distance_travelled = 0,
-            std::string registration_number = "N/A")
+    Vehicle(int wheels, int seats, std::string fuel_type,
+            int maximum_fuel_capacity, int maximum_speed,
+            std::string registration_number)
         : m_wheels(wheels), m_seats(seats), m_fuel_type(fuel_type),
-          m_maximum_fuel_capacity(maximum_fuel_capacity),
-          m_current_fuel(current_fuel), m_maximum_speed(maximum_speed),
-          m_total_distance_travelled(total_distance_travelled),
+          m_maximum_fuel_capacity(maximum_fuel_capacity), m_current_fuel(0),
+          m_maximum_speed(maximum_speed), m_total_distance_travelled(0),
           m_registration_number(registration_number) {}
+    virtual ~Vehicle() = default;
+
+    // getters
+    int getWheels() const { return m_wheels; }
+    int getSeats() const { return m_seats; }
+    std::string getFuelType() const { return m_fuel_type; }
+    int getMaxFuelCapacity() const { return m_maximum_fuel_capacity; }
+    int getCurrentFuel() const { return m_current_fuel; }
+    int getMaxSpeed() const { return m_maximum_speed; }
+    int getTotalDistance() const { return m_total_distance_travelled; }
+    std::string getRegistrationNumber() const { return m_registration_number; }
+
+    // setters
+    void setMaxSpeed(int speed) {
+        if (speed > 0) {
+            m_maximum_speed = speed;
+        } else {
+            std::cout << "[ERROR] Speed must be greater than 0.\n";
+        }
+    }
+    void setRegistrationNumber(std::string regNum) {
+        if (!regNum.empty()) {
+            m_registration_number = regNum;
+        } else {
+            std::cout << "[ERROR] Registration number cannot be blank.\n";
+        }
+    }
+
+    // action methods
+    bool refuel(int amount) {
+        if (amount < 0) {
+            std::cout << "[ERROR] Cannot refuel by a negative amount!\n";
+            return false;
+        }
+
+        if (m_current_fuel + amount <= m_maximum_fuel_capacity) {
+            m_current_fuel += amount;
+            return true;
+        } else
+            return false;
+    }
+    void addDistance(int distance) {
+        if (distance > 0)
+            m_total_distance_travelled += distance;
+    }
 
     virtual void start();
     virtual void stop();
     virtual void displayInfo() const;
+    virtual VehicleType getType() const = 0;
     //	virtual void saveInfo() const;
     //	virtual void loadInfo();
 };
@@ -57,23 +104,20 @@ void Vehicle::stop() {
 }
 
 void Vehicle::displayInfo() const {
-    std::cout << "Number of wheels: " << m_wheels << std::endl;
-    std::cout << "Number of seats: " << m_seats << std::endl;
-    std::cout << "Fuel type: " << m_fuel_type << std::endl;
-    std::cout << "Maximum fuel capacity(L): " << m_maximum_fuel_capacity
+    std::cout << "Registration number: " << m_registration_number << std::endl
+              << "| Wheels: " << m_wheels << std::endl
+              << "| Seats: " << m_seats << std::endl
+              << "| Fuel Type: " << m_fuel_type << std::endl
+              << "| Maximum Fuel Capacity: " << m_maximum_fuel_capacity
+              << std::endl
+              << "| Current Fuel Amount: " << m_current_fuel << std::endl
+              << "| Maximum speed: " << m_maximum_speed << std::endl
+              << "| Total Distance Travelled: " << m_total_distance_travelled
               << std::endl;
-    std::cout << "Current fuel amount((L): " << m_current_fuel << std::endl;
-    std::cout << "Maximum speed(kmph): " << m_maximum_speed << std::endl;
-    std::cout << "Total distance travelled(km): " << m_total_distance_travelled
-              << std::endl;
-    std::cout << "Registration number: " << m_registration_number << std::endl;
 }
 } // namespace FleetManagementSystem
 
 int main() {
     using namespace FleetManagementSystem;
-    Vehicle p(4, 4, "Diesel", 10, 5, 200, 50, "XX000001");
-    p.start();
-    p.displayInfo();
-    p.stop();
+    using namespace std;
 }
