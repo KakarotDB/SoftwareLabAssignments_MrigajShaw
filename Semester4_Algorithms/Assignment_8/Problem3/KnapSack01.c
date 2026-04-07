@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <time.h>
 #define ll long long
 #define max(a, b) ((a) > (b) ? (a) : (b))
