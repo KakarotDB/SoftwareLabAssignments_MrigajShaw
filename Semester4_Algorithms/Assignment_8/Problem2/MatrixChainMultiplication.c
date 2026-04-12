@@ -19,7 +19,7 @@ ll matrixChainRecursive(Matrix *matrices, ll i, ll j) {
         ll rightCost = matrixChainRecursive(matrices, k + 1, j);
 
         ll mergeCost =
-            matrices[i].rows * matrices[k].columns * matrices[j].columns;
+            (ll)(matrices[i].rows * matrices[k].columns * matrices[j].columns);
 
         ll totalCost = leftCost + rightCost + mergeCost;
 
@@ -30,8 +30,36 @@ ll matrixChainRecursive(Matrix *matrices, ll i, ll j) {
     return minCost;
 }
 
-int matrixChainDynamicProgramming(Matrix *matrices, int n) {
-    // TODO : Finish DP
+ll matrixChainDynamicProgramming(Matrix *matrices, int n) {
+    ll dp[n][n];
+
+    // base case : dp[i][i] = 0
+    for (int i = 0; i < n; i++)
+        dp[i][i] = 0;
+
+    for (int chainLength = 2; chainLength <= n; chainLength++) {
+        for (int i = 0; i < n - chainLength + 1; i++) {
+            // j is ending index of current chain
+            int j = i + chainLength - 1;
+
+            dp[i][j] = LONG_LONG_MAX;
+
+            // for all possible split points k in between i and < j
+            for (int k = i; k < j; k++) {
+                ll leftCost = dp[i][k];
+                ll rightCost = dp[k + 1][j];
+                ll mergeCost = (ll)(matrices[i].rows * matrices[k].columns *
+                                    matrices[j].columns);
+
+                ll cost = leftCost + rightCost + mergeCost;
+
+                if (cost < dp[i][j])
+                    dp[i][j] = cost;
+            }
+        }
+    }
+
+    return dp[0][n - 1];
 }
 
 int main() {
