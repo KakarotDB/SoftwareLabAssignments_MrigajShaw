@@ -165,7 +165,7 @@ class AllRounder : public Batsman, public Bowler {
     void addMatch(std::string opp, int runs, int balls, bool out, int wickets,
                   double overs) {
         Match newMatch(opp, runs, balls, out, wickets, overs);
-        insertMatchRecord(newMatch); // Calls inherited base function
+        insertMatchRecord(newMatch);
     }
 
     void displayStats() const override {
