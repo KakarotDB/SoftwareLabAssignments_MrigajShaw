@@ -22,16 +22,29 @@ int main() {
     };
 
     int r, s, u;
-    char p, comma;
+	string p;
+	string token;
 
-    while (inFile >> r >> comma >> s >> comma >> p >> comma >> u) {
-        if (r >= 1 && r <= 4 && s >= 1 && s <= 6) {
-            int productIndex = p - 'A';
+	while(getline(inFile, token, ',')) {
+		r = stoi(token);
+		
+		getline(inFile, token, ',');
+		s = stoi(token);
 
-            float price = ProductPrices[productIndex][1];
-            totals[r - 1][s - 1] += price * u;
-        }
-    }
+		getline(inFile, token, ',');
+		p = token;
+
+		getline(inFile, token);
+		u = stoi(token);
+
+		if(r >= 1 && r <= 4 && s >= 1 && s <= 6) {
+			int productIndex = p[0] - 'A';
+
+			float price = ProductPrices[productIndex][1];
+			totals[r-1][s-1] += price * u;
+		}
+	
+	}
 
     inFile.close();
 
