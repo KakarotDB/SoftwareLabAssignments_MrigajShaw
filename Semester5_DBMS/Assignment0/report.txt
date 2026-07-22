@@ -1,42 +1,70 @@
-ABC Company
+============================================
+               ABC COMPANY                  
+          MONTHLY SALES REPORT              
+============================================
+Generated on: July 22, 2026 at 07:08 PM
 
-Region 1
-Salesman 1 : Rs. 358681.19/-
-Salesman 2 : Rs. 469890.22/-
-Salesman 3 : Rs. 353507.31/-
-Salesman 4 : Rs. 332256.59/-
-Salesman 5 : Rs. 313687.59/-
-Salesman 6 : Rs. 375041.22/-
+|                REGION 1                  |
++------------------------------------------+
+  Salesman           |     Sales Amount  
+--------------------------------------------
+  Salesman 1        | Rs.  358681.19/-
+  Salesman 2        | Rs.  469890.22/-
+  Salesman 3        | Rs.  353507.31/-
+  Salesman 4        | Rs.  332256.59/-
+  Salesman 5        | Rs.  313687.59/-
+  Salesman 6        | Rs.  375041.22/-
+--------------------------------------------
+  TOTAL SALES        | Rs. 2203064.25/-
++------------------------------------------+
+                      - Page 1 -
 
-Total sale at region 1 : Rs 2203064.25/-
 
-Region 2
-Salesman 1 : Rs. 289336.09/-
-Salesman 2 : Rs. 275677.44/-
-Salesman 3 : Rs. 342709.31/-
-Salesman 4 : Rs. 267423.00/-
-Salesman 5 : Rs. 264981.97/-
-Salesman 6 : Rs. 244009.70/-
+|                REGION 2                  |
++------------------------------------------+
+  Salesman           |     Sales Amount  
+--------------------------------------------
+  Salesman 1        | Rs.  289336.09/-
+  Salesman 2        | Rs.  275677.44/-
+  Salesman 3        | Rs.  342709.31/-
+  Salesman 4        | Rs.  267423.00/-
+  Salesman 5        | Rs.  264981.97/-
+  Salesman 6        | Rs.  244009.70/-
+--------------------------------------------
+  TOTAL SALES        | Rs. 1684137.50/-
++------------------------------------------+
+                      - Page 2 -
 
-Total sale at region 2 : Rs 1684137.50/-
 
-Region 3
-Salesman 1 : Rs. 382560.44/-
-Salesman 2 : Rs. 246537.98/-
-Salesman 3 : Rs. 270443.78/-
-Salesman 4 : Rs. 343691.91/-
-Salesman 5 : Rs. 368745.84/-
-Salesman 6 : Rs. 341525.75/-
+|                REGION 3                  |
++------------------------------------------+
+  Salesman           |     Sales Amount  
+--------------------------------------------
+  Salesman 1        | Rs.  382560.44/-
+  Salesman 2        | Rs.  246537.98/-
+  Salesman 3        | Rs.  270443.78/-
+  Salesman 4        | Rs.  343691.91/-
+  Salesman 5        | Rs.  368745.84/-
+  Salesman 6        | Rs.  341525.75/-
+--------------------------------------------
+  TOTAL SALES        | Rs. 1953505.75/-
++------------------------------------------+
+                      - Page 3 -
 
-Total sale at region 3 : Rs 1953505.75/-
 
-Region 4
-Salesman 1 : Rs. 454504.50/-
-Salesman 2 : Rs. 304662.97/-
-Salesman 3 : Rs. 366650.50/-
-Salesman 4 : Rs. 324155.38/-
-Salesman 5 : Rs. 388050.88/-
-Salesman 6 : Rs. 365744.94/-
+|                REGION 4                  |
++------------------------------------------+
+  Salesman           |     Sales Amount  
+--------------------------------------------
+  Salesman 1        | Rs.  454504.50/-
+  Salesman 2        | Rs.  304662.97/-
+  Salesman 3        | Rs.  366650.50/-
+  Salesman 4        | Rs.  324155.38/-
+  Salesman 5        | Rs.  388050.88/-
+  Salesman 6        | Rs.  365744.94/-
+--------------------------------------------
+  TOTAL SALES        | Rs. 2203769.25/-
++------------------------------------------+
+                      - Page 4 -
 
-Total sale at region 4 : Rs 2203769.25/-
 
