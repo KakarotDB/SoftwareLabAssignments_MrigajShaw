@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Registration</title>
+</head>
+<body bgcolor="#ffffff">
+    <font face="Arial, sans-serif">
+        <center>
+            <h2>User Registration</h2>
+            <p><i>Please fill out this form to access the Question Bank and Course Structure.</i></p>
+        </center>
+        <hr width="80%" color="#dddddd">
+        <br>
+        
+        <table align="center" cellpadding="15" bgcolor="#f5f5f5" border="1" bordercolor="#cccccc" cellspacing="0" width="60%">
+            <tr>
+                <td>
+                    <form action="courses.html" target="main">
+                        <fieldset>
+                            <legend><b>Personal Details</b></legend>
+                            <table cellpadding="8" width="100%" border="0">
+                                <tr>
+                                    <td width="30%">Full Name:</td>
+                                    <td><input type="text" name="fullname" size="30" required></td>
+                                </tr>
+                                <tr>
+                                    <td>Date of Birth:</td>
+                                    <!-- HTML5 min/max validation -->
+                                    <td><input type="date" name="dob" min="1995-01-01" max="2010-12-31" required></td>
+                                </tr>
+                                <tr>
+                                    <td>Upload Photograph:</td>
+                                    <td><input type="file" name="photo" accept="image/*" required></td>
+                                </tr>
+                            </table>
+                        </fieldset>
+                        <br>
+                        
+                        <fieldset>
+                            <legend><b>Academic Details</b></legend>
+                            <table cellpadding="8" width="100%" border="0">
+                                <tr>
+                                    <td width="30%">Roll Number:<br><font size="2" color="#666666"><i>Format: CS2026</i></font></td>
+                                    <!-- HTML5 Pattern validation -->
+                                    <td><input type="text" name="rollno" pattern="[A-Z]{2}[0-9]{4}" title="Format: 2 Uppercase Letters followed by 4 Digits" size="20" required></td>
+                                </tr>
+                                <tr>
+                                    <td>Department:</td>
+                                    <!-- HTML5 Datalist for autocomplete -->
+                                    <td>
+                                        <input list="departments" name="dept" size="30" placeholder="Type or select branch..." required>
+                                        <datalist id="departments">
+                                            <option value="Computer Science">
+                                            <option value="Information Technology">
+                                            <option value="Electrical Engineering">
+                                            <option value="Mechanical Engineering">
+                                            <option value="Civil Engineering">
+                                        </datalist>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Semester:</td>
+                                    <td>
+                                        <select name="semester">
+                                            <option value="1">Semester 1</option>
+                                            <option value="2">Semester 2</option>
+                                            <option value="3">Semester 3</option>
+                                            <option value="4">Semester 4</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            </table>
+                        </fieldset>
+                        <br>
+                        
+                        <center>
+                            <input type="submit" value="Register & Access Courses" style="padding: 5px 15px;">
+                            &nbsp;&nbsp;
+                            <input type="reset" value="Clear Form" style="padding: 5px 15px;">
+                        </center>
+                    </form>
+                </td>
+            </tr>
+        </table>
+    </font>
+</body>
+</html>
