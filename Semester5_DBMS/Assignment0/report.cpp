@@ -41,8 +41,6 @@ int main() {
         u = stoi(token);
 
         if (r >= 1 && r <= 4 && s >= 1 && s <= 6) {
-            // find_first_not_of(" ") safely handles spaces if your CSV looks
-            // like "1, 1, A, 5"
             char productChar = p[p.find_first_not_of(" ")];
             int productIndex = productChar - 'A';
 
