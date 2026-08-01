@@ -1,4 +1,4 @@
--- Q1: Constraint violation attempts (each will FAIL)
+-- Q1: Constraint violation attempts 
 -- PRIMARY KEY violation
 INSERT INTO
   depts (deptcode, deptname)
@@ -43,18 +43,6 @@ VALUES
     1,
     100000.0
   );
-
--- FOREIGN KEY violation: crs_rollno
-INSERT INTO
-  crs_regd (crs_rollno, crs_cd, marks)
-VALUES
-  (11111111, 'CS101', 50.00);
-
--- COMPOSITE PRIMARY KEY violation
-INSERT INTO
-  crs_regd (crs_rollno, crs_cd, marks)
-VALUES
-  (92005001, 'CS101', 99.00);
 
 -- Q2: Delete deptcode='CSE' (cascades to students)
 SELECT
