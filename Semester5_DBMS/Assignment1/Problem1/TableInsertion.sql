@@ -42,7 +42,7 @@ INSERT INTO
 VALUES
   (
     92005001,
-    'Amit Sharma',
+    'Riddhi Agarwal',
     '1995-03-15',
     'CSE',
     1,

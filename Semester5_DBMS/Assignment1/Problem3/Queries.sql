@@ -116,22 +116,16 @@ SELECT
   s.name
 FROM
   students s
-WHERE
-  NOT EXISTS (
+  JOIN crs_regd cr ON s.rollno = cr.crs_rollno
+GROUP BY
+  s.rollno,
+  s.name
+HAVING
+  COUNT(DISTINCT cr.crs_cd) = (
     SELECT
-      co.crs_code
+      COUNT(*)
     FROM
-      crs_offrd co
-    WHERE
-      NOT EXISTS (
-        SELECT
-          1
-        FROM
-          crs_regd cr
-        WHERE
-          cr.crs_rollno = s.rollno
-          AND cr.crs_cd = co.crs_code
-      )
+      crs_offrd
   );
 
 -- Q10: Grace Marks +5 in 'DBMS' for students who scored < 50
