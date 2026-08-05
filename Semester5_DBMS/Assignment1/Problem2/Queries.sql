@@ -20,12 +20,15 @@ GROUP BY
 -- Q3: Total credits of courses registered by a student
 SELECT
   r.crs_rollno,
+  s.name,
   SUM(o.crs_credits) AS total_credits
 FROM
   crs_regd r
   JOIN crs_offrd o ON r.crs_cd = o.crs_code
+  JOIN students s on r.crs_rollno = s.rollno
 GROUP BY
-  r.crs_rollno;
+  r.crs_rollno,
+  s.name;
 
 -- Q4: Number of students in each hostel whose department is CSE
 SELECT

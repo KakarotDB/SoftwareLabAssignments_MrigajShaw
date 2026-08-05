@@ -71,6 +71,17 @@ WHERE
       )
   );
 
+DELETE FROM crs_regd
+WHERE
+  crs_rollno IN (
+    SELECT
+      rollno
+    FROM
+      students
+    WHERE
+      TRIM(deptcode) = 'CSE'
+  );
+
 DELETE FROM crs_offrd
 WHERE
   crs_fac_cd IN (
