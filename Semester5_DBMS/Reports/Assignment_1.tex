@@ -1,0 +1,766 @@
+\documentclass[11pt, a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tabularx}
+
+% Configure SQL code block styling
+\lstset{
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue}\bfseries,
+    stringstyle=\color{red!70!black},
+    commentstyle=\color{green!60!black}\itshape,
+    frame=single,
+    backgroundcolor=\color{gray!5},
+    breaklines=true,
+    showstringspaces=false
+}
+
+\title{Assignment1 Lab Report}
+\author{Student Name}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Assignment 1}
+\subsection*{Q1: Constraint violation attempts}
+\begin{lstlisting}[language=SQL]
+-- PRIMARY KEY violation
+INSERT INTO
+  depts (deptcode, deptname)
+VALUES
+  ('CSE', 'Duplicate Dept');
+
+-- CHECK violation: bdate >= '1997-01-01'
+INSERT INTO
+  students (rollno, name, bdate, deptcode, hostel, parent_inc)
+VALUES
+  (
+    99999999,
+    'Test Student',
+    '1998-05-10',
+    'CSE',
+    1,
+    100000.0
+  );
+
+-- CHECK violation: hostel >= 10
+INSERT INTO
+  students (rollno, name, bdate, deptcode, hostel, parent_inc)
+VALUES
+  (
+    99999998,
+    'Test Student 2',
+    '1995-01-01',
+    'CSE',
+    15,
+    100000.0
+  );
+
+-- FOREIGN KEY violation: deptcode
+INSERT INTO
+  students (rollno, name, bdate, deptcode, hostel, parent_inc)
+VALUES
+  (
+    99999997,
+    'Test Student 3',
+    '1995-01-01',
+    'XYZ',
+    1,
+    100000.0
+  );
+\end{lstlisting}
+\vspace{0.3cm}
+\textcolor{red}{\textbf{Error:} duplicate key value violates unique constraint "depts\_pkey"
+DETAIL:  Key (deptcode)=(CSE) already exists.}\vspace{0.2cm}\newline
+\textcolor{red}{\textbf{Error:} new row for relation "students" violates check constraint "students\_bdate\_check"
+DETAIL:  Failing row contains (99999999, Test Student                  , 1998-05-10, CSE, 1, 100000.0).}\vspace{0.2cm}\newline
+\textcolor{red}{\textbf{Error:} new row for relation "students" violates check constraint "students\_hostel\_check"
+DETAIL:  Failing row contains (99999998, Test Student 2                , 1995-01-01, CSE, 15, 100000.0).}\vspace{0.2cm}\newline
+\textcolor{red}{\textbf{Error:} insert or update on table "students" violates foreign key constraint "students\_deptcode\_fkey"
+DETAIL:  Key (deptcode)=(XYZ) is not present in table "depts".}\vspace{0.2cm}
+\newpage
+\subsection*{Q2: Delete deptcode='CSE' (cascades to students)}
+\begin{lstlisting}[language=SQL]
+SELECT
+  rollno,
+  name
+FROM
+  students
+WHERE
+  TRIM(deptcode) = 'CSE';
+
+DELETE FROM crs_regd
+WHERE
+  crs_cd IN (
+    SELECT
+      crs_code
+    FROM
+      crs_offrd
+    WHERE
+      crs_fac_cd IN (
+        SELECT
+          fac_code
+        FROM
+          faculty
+        WHERE
+          TRIM(fac_dept) = 'CSE'
+      )
+  );
+
+DELETE FROM crs_regd
+WHERE
+  crs_rollno IN (
+    SELECT
+      rollno
+    FROM
+      students
+    WHERE
+      TRIM(deptcode) = 'CSE'
+  );
+
+DELETE FROM crs_offrd
+WHERE
+  crs_fac_cd IN (
+    SELECT
+      fac_code
+    FROM
+      faculty
+    WHERE
+      TRIM(fac_dept) = 'CSE'
+  );
+
+DELETE FROM faculty
+WHERE
+  TRIM(fac_dept) = 'CSE';
+
+DELETE FROM depts
+WHERE
+  TRIM(deptcode) = 'CSE';
+
+SELECT
+  rollno,
+  name
+FROM
+  students
+WHERE
+  TRIM(deptcode) = 'CSE';
+\end{lstlisting}
+\vspace{0.3cm}
+\textbf{Output:}\vspace{0.2cm}
+\textit{CSE Students Before Deletion: }
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{rollno} & \textbf{name} \\ \hline
+92005001 & Riddhi Agarwal                 \\ \hline
+92005002 & Priya Verma                    \\ \hline
+92005003 & Rahul Das                      \\ \hline
+92005004 & Sneha Gupta                    \\ \hline
+\end{tabular}
+\end{center}
+\textit{Statement executed successfully.}\vspace{0.2cm}\newline
+\textit{Statement executed successfully.}\vspace{0.2cm}\newline
+\textit{Statement executed successfully.}\vspace{0.2cm}\newline
+\textit{Statement executed successfully.}\vspace{0.2cm}\newline
+\textit{Statement executed successfully.}\vspace{0.2cm}\newline
+\textit{Statement executed successfully. (0 rows returned)}\vspace{0.2cm} \newline
+\newpage
+\subsection*{Q3: Courses offered by faculty 'dbp' and 'nls'}
+\begin{lstlisting}[language=SQL]
+SELECT
+  crs_code,
+  crs_name
+FROM
+  crs_offrd
+WHERE
+  TRIM(crs_fac_cd) IN ('dbp', 'nls');
+\end{lstlisting}
+\vspace{0.3cm}
+\textbf{Output:}\vspace{0.2cm}
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{crs\_code} & \textbf{crs\_name} \\ \hline
+CS101 & DBMS                                \\ \hline
+CS102 & OS                                  \\ \hline
+CS103 & Software Engg.                      \\ \hline
+CS104 & MIS                                 \\ \hline
+\end{tabular}
+\end{center}
+\newpage
+\subsection*{Q4: Courses with full details offered by 'dbp'}
+\begin{lstlisting}[language=SQL]
+SELECT
+  co.crs_code,
+  co.crs_name,
+  co.crs_credits,
+  f.fac_name,
+  f.fac_dept
+FROM
+  crs_offrd co
+  JOIN faculty f ON co.crs_fac_cd = f.fac_code
+WHERE
+  TRIM(co.crs_fac_cd) = 'dbp';
+\end{lstlisting}
+\vspace{0.3cm}
+\textbf{Output:}\vspace{0.2cm}
+\begin{center}
+\begin{tabular}{|l|l|l|l|l|}
+\hline
+\textbf{crs\_code} & \textbf{crs\_name} & \textbf{crs\_credits} & \textbf{fac\_name} & \textbf{fac\_dept} \\ \hline
+CS103 & Software Engg.                      & 6.0 & Dr. D.B. Phatak                & CSE \\ \hline
+CS102 & OS                                  & 5.0 & Dr. D.B. Phatak                & CSE \\ \hline
+CS101 & DBMS                                & 4.0 & Dr. D.B. Phatak                & CSE \\ \hline
+\end{tabular}
+\end{center}
+\newpage
+\subsection*{Q5: Courses with credits between 4.0 and 6.0}
+\begin{lstlisting}[language=SQL]
+SELECT
+  crs_code,
+  crs_name,
+  crs_credits
+FROM
+  crs_offrd
+WHERE
+  crs_credits BETWEEN 4.0 AND 6.0;
+\end{lstlisting}
+\vspace{0.3cm}
+\textbf{Output:}\vspace{0.2cm}
+\begin{center}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{crs\_code} & \textbf{crs\_name} & \textbf{crs\_credits} \\ \hline
+CS101 & DBMS                                & 4.0 \\ \hline
+CS102 & OS                                  & 5.0 \\ \hline
+CS103 & Software Engg.                      & 6.0 \\ \hline
+CS104 & MIS                                 & 4.5 \\ \hline
+EE101 & Circuit Theory                      & 5.5 \\ \hline
+IT101 & Data Structures                     & 4.0 \\ \hline
+\end{tabular}
+\end{center}
+\newpage
+\subsection*{Q6: Courses with credits greater than 6.5}
+\begin{lstlisting}[language=SQL]
+SELECT
+  crs_code,
+  crs_name,
+  crs_credits
+FROM
+  crs_offrd
+WHERE
+  crs_credits > 6.5;
+\end{lstlisting}
+\vspace{0.3cm}
+\textbf{Output:}\vspace{0.2cm}
+\begin{center}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{crs\_code} & \textbf{crs\_name} & \textbf{crs\_credits} \\ \hline
+EE102 & Signal Processing                   & 7.0 \\ \hline
+PH106 & Physics                             & 8.0 \\ \hline
+ME101 & Thermodynamics                      & 7.5 \\ \hline
+\end{tabular}
+\end{center}
+\newpage
+\section{Assignment 2}
+\subsection*{Q1: Count students in CSE dept}
+\begin{lstlisting}[language=SQL]
+SELECT
+  COUNT(*)
+FROM
+  students
+WHERE
+  TRIM(deptcode) = 'CSE';
+\end{lstlisting}
+\vspace{0.3cm}
+\textbf{Output:}\vspace{0.2cm}
+\begin{center}
+\begin{tabular}{|l|}
+\hline
+\textbf{count} \\ \hline
+4 \\ \hline
+\end{tabular}
+\end{center}
+\newpage
+\subsection*{Q2: Min, max and average marks of each course}
+\begin{lstlisting}[language=SQL]
+SELECT
+  crs_cd,
+  MIN(marks) AS min_marks,
+  MAX(marks) AS max_marks,
+  AVG(marks) AS avg_marks
+FROM
+  crs_regd
+GROUP BY
+  crs_cd;
+\end{lstlisting}
+\vspace{0.3cm}
+\textbf{Output:}\vspace{0.2cm}
+\begin{center}
+\begin{tabular}{|l|l|l|l|}
+\hline
+\textbf{crs\_cd} & \textbf{min\_marks} & \textbf{max\_marks} & \textbf{avg\_marks} \\ \hline
+PH106 & 55.00 & 90.00 & 74.8750000000000000 \\ \hline
+CS104 & 91.00 & 91.00 & 91.0000000000000000 \\ \hline
+CH103 & 60.00 & 88.00 & 72.0000000000000000 \\ \hline
+CS101 & 30.00 & 92.00 & 56.0500000000000000 \\ \hline
+ME101 & 65.00 & 71.00 & 68.0000000000000000 \\ \hline
+EE101 & 70.00 & 82.00 & 75.2500000000000000 \\ \hline
+CS102 & 72.00 & 88.00 & 77.7500000000000000 \\ \hline
+IT101 & 76.00 & 82.00 & 79.0000000000000000 \\ \hline
+CS103 & 68.00 & 68.00 & 68.0000000000000000 \\ \hline
+EE102 & 60.00 & 85.00 & 72.5000000000000000 \\ \hline
+\end{tabular}
+\end{center}
+\newpage
+\subsection*{Q3: Total credits of courses registered by a student}
+\begin{lstlisting}[language=SQL]
+SELECT
+  r.crs_rollno,
+  s.name,
+  SUM(o.crs_credits) AS total_credits
+FROM
+  crs_regd r
+  JOIN crs_offrd o ON r.crs_cd = o.crs_code
+  JOIN students s on r.crs_rollno = s.rollno
+GROUP BY
+  r.crs_rollno,
+  s.name;
+\end{lstlisting}
+\vspace{0.3cm}
+\textbf{Output:}\vspace{0.2cm}
+\begin{center}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{crs\_rollno} & \textbf{name} & \textbf{total\_credits} \\ \hline
+92005004 & Sneha Gupta                    & 9.0 \\ \hline
+92005012 & Vikram Singh                   & 7.0 \\ \hline
+92005103 & Pooja Reddy                    & 15.0 \\ \hline
+92005011 & Neha Patil                     & 9.5 \\ \hline
+92005001 & Riddhi Agarwal                 & 54.5 \\ \hline
+92005102 & Deepak Mehta                   & 16.5 \\ \hline
+92005003 & Rahul Das                      & 4.0 \\ \hline
+92005010 & Ravi Kumar                     & 9.5 \\ \hline
+92005100 & Suresh Nair                    & 20.0 \\ \hline
+92005002 & Priya Verma                    & 9.0 \\ \hline
+92005104 & Arun Bhat                      & 8.0 \\ \hline
+92005101 & Kavita Jain                    & 4.0 \\ \hline
+92005106 & Kiran Desai                    & 7.5 \\ \hline
+\end{tabular}
+\end{center}
+\newpage
+\subsection*{Q4: Number of students in each hostel whose department is CSE}
+\begin{lstlisting}[language=SQL]
+SELECT
+  hostel,
+  COUNT(*) AS num_students
+FROM
+  students
+WHERE
+  TRIM(deptcode) = 'CSE'
+GROUP BY
+  hostel;
+\end{lstlisting}
+\vspace{0.3cm}
+\textbf{Output:}\vspace{0.2cm}
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{hostel} & \textbf{num\_students} \\ \hline
+1 & 2 \\ \hline
+2 & 1 \\ \hline
+3 & 1 \\ \hline
+\end{tabular}
+\end{center}
+\newpage
+\subsection*{Q5: Hostel, rollno, parent\_inc of student with max(parent\_inc) in each hostel}
+\begin{lstlisting}[language=SQL]
+SELECT
+  hostel,
+  rollno,
+  parent_inc
+FROM
+  (
+    SELECT
+      hostel,
+      rollno,
+      parent_inc,
+      RANK() OVER (
+        PARTITION BY
+          hostel
+        ORDER BY
+          parent_inc DESC
+      ) as rank
+    FROM
+      students
+    WHERE
+      hostel IS NOT NULL
+  ) ranked_students
+WHERE
+  rank = 1;
+\end{lstlisting}
+\vspace{0.3cm}
+\textbf{Output:}\vspace{0.2cm}
+\begin{center}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{hostel} & \textbf{rollno} & \textbf{parent\_inc} \\ \hline
+1 & 92005001 & 500000.0 \\ \hline
+2 & 92005002 & 750000.0 \\ \hline
+3 & 92005004 & 600000.0 \\ \hline
+4 & 92005011 & 900000.0 \\ \hline
+5 & 92005012 & 350000.0 \\ \hline
+6 & 92005100 & 800000.0 \\ \hline
+7 & 92005101 & 650000.0 \\ \hline
+8 & 92005103 & 700000.0 \\ \hline
+9 & 92005105 & 550000.0 \\ \hline
+\end{tabular}
+\end{center}
+\newpage
+\subsection*{Q6: Name and parent\_inc of students with ncome greater than rollno 92005010}
+\begin{lstlisting}[language=SQL]
+SELECT
+  name,
+  parent_inc
+FROM
+  students
+WHERE
+  parent_inc > (
+    SELECT
+      parent_inc
+    FROM
+      students
+    WHERE
+      rollno = 92005010
+  );
+\end{lstlisting}
+\vspace{0.3cm}
+\textbf{Output:}\vspace{0.2cm}
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{name} & \textbf{parent\_inc} \\ \hline
+Riddhi Agarwal                 & 500000.0 \\ \hline
+Priya Verma                    & 750000.0 \\ \hline
+Sneha Gupta                    & 600000.0 \\ \hline
+Neha Patil                     & 900000.0 \\ \hline
+Ananya Roy                     & 550000.0 \\ \hline
+Suresh Nair                    & 800000.0 \\ \hline
+Kavita Jain                    & 650000.0 \\ \hline
+Pooja Reddy                    & 700000.0 \\ \hline
+Meera Iyer                     & 550000.0 \\ \hline
+Kiran Desai                    & 480000.0 \\ \hline
+\end{tabular}
+\end{center}
+\newpage
+\subsection*{Q7: Marks of students who scored more than rollno 92005102 in CH103 and PH106}
+\begin{lstlisting}[language=SQL]
+SELECT
+  r.crs_rollno,
+  r.crs_cd,
+  r.marks
+FROM
+  crs_regd r
+WHERE
+  TRIM(r.crs_cd) IN ('CH103', 'PH106')
+  AND r.marks > (
+    SELECT
+      r2.marks
+    FROM
+      crs_regd r2
+    WHERE
+      r2.crs_rollno = 92005102
+      AND r2.crs_cd = r.crs_cd
+  );
+\end{lstlisting}
+\vspace{0.3cm}
+\textbf{Output:}\vspace{0.2cm}
+\begin{center}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{crs\_rollno} & \textbf{crs\_cd} & \textbf{marks} \\ \hline
+92005001 & CH103 & 88.00 \\ \hline
+92005001 & PH106 & 74.50 \\ \hline
+92005012 & CH103 & 65.00 \\ \hline
+92005100 & CH103 & 75.00 \\ \hline
+92005100 & PH106 & 80.00 \\ \hline
+92005103 & PH106 & 90.00 \\ \hline
+\end{tabular}
+\end{center}
+\newpage
+\section{Assignment 3}
+\subsection*{Q1: Students (rollno, name, deptcode) registered for course EE101}
+\begin{lstlisting}[language=SQL]
+SELECT
+  s.rollno,
+  s.name,
+  s.deptcode
+FROM
+  students s
+  JOIN crs_regd cr ON s.rollno = cr.crs_rollno
+WHERE
+  TRIM(cr.crs_cd) = 'EE101';
+\end{lstlisting}
+\vspace{0.3cm}
+\textbf{Output:}\vspace{0.2cm}
+\begin{center}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{rollno} & \textbf{name} & \textbf{deptcode} \\ \hline
+92005001 & Riddhi Agarwal                 & CSE \\ \hline
+92005010 & Ravi Kumar                     & ELE \\ \hline
+92005011 & Neha Patil                     & ELE \\ \hline
+92005102 & Deepak Mehta                   & ETC \\ \hline
+\end{tabular}
+\end{center}
+\newpage
+\subsection*{Q2: Students (rollno, name) in ELE dept registered for course EE101}
+\begin{lstlisting}[language=SQL]
+SELECT
+  s.rollno,
+  s.name
+FROM
+  students s
+  JOIN crs_regd cr ON s.rollno = cr.crs_rollno
+WHERE
+  TRIM(s.deptcode) = 'ELE'
+  AND TRIM(cr.crs_cd) = 'EE101';
+\end{lstlisting}
+\vspace{0.3cm}
+\textbf{Output:}\vspace{0.2cm}
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{rollno} & \textbf{name} \\ \hline
+92005010 & Ravi Kumar                     \\ \hline
+92005011 & Neha Patil                     \\ \hline
+\end{tabular}
+\end{center}
+\newpage
+\subsection*{Q3: Students (rollno, name) in ELE dept NOT registered for course EE101}
+\begin{lstlisting}[language=SQL]
+SELECT
+  rollno,
+  name
+FROM
+  students
+WHERE
+  TRIM(deptcode) = 'ELE'
+  AND rollno NOT IN (
+    SELECT
+      crs_rollno
+    FROM
+      crs_regd
+    WHERE
+      TRIM(crs_cd) = 'EE101'
+  );
+\end{lstlisting}
+\vspace{0.3cm}
+\textbf{Output:}\vspace{0.2cm}
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{rollno} & \textbf{name} \\ \hline
+92005012 & Vikram Singh                   \\ \hline
+92005013 & Ananya Roy                     \\ \hline
+\end{tabular}
+\end{center}
+\newpage
+\subsection*{Q4: Students registered for BOTH 'DBMS' and 'OS'}
+\begin{lstlisting}[language=SQL]
+SELECT
+  s.name
+FROM
+  students s
+  JOIN crs_regd cr1 ON s.rollno = cr1.crs_rollno
+  JOIN crs_offrd co1 ON cr1.crs_cd = co1.crs_code
+  JOIN crs_regd cr2 ON s.rollno = cr2.crs_rollno
+  JOIN crs_offrd co2 ON cr2.crs_cd = co2.crs_code
+WHERE
+  TRIM(co1.crs_name) = 'DBMS'
+  AND TRIM(co2.crs_name) = 'OS';
+\end{lstlisting}
+\vspace{0.3cm}
+\textbf{Output:}\vspace{0.2cm}
+\begin{center}
+\begin{tabular}{|l|}
+\hline
+\textbf{name} \\ \hline
+Riddhi Agarwal                 \\ \hline
+Priya Verma                    \\ \hline
+Sneha Gupta                    \\ \hline
+Suresh Nair                    \\ \hline
+\end{tabular}
+\end{center}
+\newpage
+\subsection*{Q5: Faculty who offered either 'MIS' or 'Software Engg.'}
+\begin{lstlisting}[language=SQL]
+SELECT
+  f.fac_name
+FROM
+  faculty f
+  JOIN crs_offrd co ON f.fac_code = co.crs_fac_cd
+WHERE
+  TRIM(co.crs_name) = 'MIS'
+  OR TRIM(co.crs_name) = 'Software Engg.';
+\end{lstlisting}
+\vspace{0.3cm}
+\textbf{Output:}\vspace{0.2cm}
+\begin{center}
+\begin{tabular}{|l|}
+\hline
+\textbf{fac\_name} \\ \hline
+Dr. D.B. Phatak                \\ \hline
+Dr. N.L. Sarda                 \\ \hline
+\end{tabular}
+\end{center}
+\newpage
+\subsection*{Q6: Faculty who offered 'MIS' but NOT 'Software Engg.'}
+\begin{lstlisting}[language=SQL]
+SELECT
+  f.fac_name
+FROM
+  faculty f
+  JOIN crs_offrd co ON f.fac_code = co.crs_fac_cd
+WHERE
+  TRIM(co.crs_name) = 'MIS'
+  AND f.fac_code NOT IN (
+    SELECT
+      crs_fac_cd
+    FROM
+      crs_offrd
+    WHERE
+      TRIM(crs_name) = 'Software Engg.'
+  );
+\end{lstlisting}
+\vspace{0.3cm}
+\textbf{Output:}\vspace{0.2cm}
+\begin{center}
+\begin{tabular}{|l|}
+\hline
+\textbf{fac\_name} \\ \hline
+Dr. N.L. Sarda                 \\ \hline
+\end{tabular}
+\end{center}
+\newpage
+\subsection*{Q7: Students in each hostel not registered for any course}
+\begin{lstlisting}[language=SQL]
+SELECT
+  s.hostel,
+  s.rollno,
+  s.name
+FROM
+  students s
+WHERE
+  s.rollno NOT IN (
+    SELECT
+      crs_rollno
+    FROM
+      crs_regd
+  );
+\end{lstlisting}
+\vspace{0.3cm}
+\textbf{Output:}\vspace{0.2cm}
+\begin{center}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{hostel} & \textbf{rollno} & \textbf{name} \\ \hline
+4 & 92005013 & Ananya Roy                     \\ \hline
+9 & 92005105 & Meera Iyer                     \\ \hline
+\end{tabular}
+\end{center}
+\newpage
+\subsection*{Q8: Students in ELE dept OR registered for course CS101}
+\begin{lstlisting}[language=SQL]
+SELECT
+  rollno,
+  name
+FROM
+  students
+WHERE
+  TRIM(deptcode) = 'ELE'
+UNION
+SELECT
+  s.rollno,
+  s.name
+FROM
+  students s
+  JOIN crs_regd cr ON s.rollno = cr.crs_rollno
+WHERE
+  TRIM(cr.crs_cd) = 'CS101';
+\end{lstlisting}
+\vspace{0.3cm}
+\textbf{Output:}\vspace{0.2cm}
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{rollno} & \textbf{name} \\ \hline
+92005001 & Riddhi Agarwal                 \\ \hline
+92005002 & Priya Verma                    \\ \hline
+92005003 & Rahul Das                      \\ \hline
+92005004 & Sneha Gupta                    \\ \hline
+92005010 & Ravi Kumar                     \\ \hline
+92005011 & Neha Patil                     \\ \hline
+92005012 & Vikram Singh                   \\ \hline
+92005013 & Ananya Roy                     \\ \hline
+92005100 & Suresh Nair                    \\ \hline
+92005101 & Kavita Jain                    \\ \hline
+92005104 & Arun Bhat                      \\ \hline
+\end{tabular}
+\end{center}
+\newpage
+\subsection*{Q9: Students registered for ALL courses}
+\begin{lstlisting}[language=SQL]
+SELECT
+  s.rollno,
+  s.name
+FROM
+  students s
+  JOIN crs_regd cr ON s.rollno = cr.crs_rollno
+GROUP BY
+  s.rollno,
+  s.name
+HAVING
+  COUNT(DISTINCT cr.crs_cd) = (
+    SELECT
+      COUNT(*)
+    FROM
+      crs_offrd
+  );
+\end{lstlisting}
+\vspace{0.3cm}
+\textbf{Output:}\vspace{0.2cm}
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{rollno} & \textbf{name} \\ \hline
+92005001 & Riddhi Agarwal                 \\ \hline
+\end{tabular}
+\end{center}
+\newpage
+\subsection*{Q10: Grace Marks +5 in 'DBMS' for students who scored < 50}
+\begin{lstlisting}[language=SQL]
+UPDATE crs_regd
+SET
+  marks = marks + 5
+WHERE
+  marks < 50
+  AND crs_cd IN (
+    SELECT
+      crs_code
+    FROM
+      crs_offrd
+    WHERE
+      TRIM(crs_name) = 'DBMS'
+  );
+\end{lstlisting}
+\vspace{0.3cm}
+\textit{Statement executed successfully.}\vspace{0.2cm}
+\newpage
+
+\end{document}
