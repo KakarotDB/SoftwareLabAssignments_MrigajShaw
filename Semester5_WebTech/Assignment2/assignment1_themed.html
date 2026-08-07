@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B.Tech Question Bank - Themed</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; }
+
+        input[name="site-theme"] {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* ---- DEFAULT THEME (original Assignment 1 colors) ---- */
+        .page {
+            --header-bg: #003366;
+            --header-fg: #ffffff;
+            --nav-bg: #f4f4f9;
+            --nav-fg: #333333;
+            --main-bg: #ffffff;
+            --main-fg: #333333;
+            --accent: #005599;
+            --link: #0066cc;
+            --border: #cccccc;
+            --field-bg: #f5f5f5;
+            --btn-bg: #003366;
+            --btn-fg: #ffffff;
+            --heading: #003366;
+            --muted: #666666;
+
+            min-height: 100vh;
+            display: grid;
+            grid-template-rows: auto 1fr;
+            grid-template-columns: 230px 1fr;
+            transition: all 0.5s ease;
+        }
+
+        /* ---- DARK THEME ---- */
+        #t-dark:checked ~ .page {
+            --header-bg: #1a1a2e;
+            --header-fg: #e0e0e0;
+            --nav-bg: #16213e;
+            --nav-fg: #c0c0c0;
+            --main-bg: #0f0f23;
+            --main-fg: #d0d0d0;
+            --accent: #e94560;
+            --link: #64b5f6;
+            --border: #333355;
+            --field-bg: #1a1a2e;
+            --btn-bg: #e94560;
+            --btn-fg: #ffffff;
+            --heading: #e94560;
+            --muted: #888888;
+        }
+
+        /* ---- OCEAN THEME ---- */
+        #t-ocean:checked ~ .page {
+            --header-bg: #0d7377;
+            --header-fg: #ffffff;
+            --nav-bg: #14a3a8;
+            --nav-fg: #ffffff;
+            --main-bg: #e8f6f3;
+            --main-fg: #2c3e50;
+            --accent: #0d7377;
+            --link: #0d7377;
+            --border: #a8dadc;
+            --field-bg: #d1ecf1;
+            --btn-bg: #0d7377;
+            --btn-fg: #ffffff;
+            --heading: #0d7377;
+            --muted: #457b9d;
+        }
+
+        /* ---- WARM THEME ---- */
+        #t-warm:checked ~ .page {
+            --header-bg: #c0392b;
+            --header-fg: #ffffff;
+            --nav-bg: #f9ebea;
+            --nav-fg: #5d4037;
+            --main-bg: #fdfefe;
+            --main-fg: #4a3728;
+            --accent: #c0392b;
+            --link: #c0392b;
+            --border: #e6b0aa;
+            --field-bg: #fdedec;
+            --btn-bg: #c0392b;
+            --btn-fg: #ffffff;
+            --heading: #c0392b;
+            --muted: #a04030;
+        }
+
+        /* HEADER */
+        .header {
+            grid-column: 1 / -1;
+            background: var(--header-bg);
+            color: var(--header-fg);
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.5s ease;
+        }
+        .header h1 { font-size: 22px; }
+
+        .theme-btns {
+            display: flex;
+            gap: 8px;
+        }
+        .theme-btns label {
+            padding: 5px 12px;
+            border: 1px solid rgba(255,255,255,0.4);
+            border-radius: 4px;
+            color: var(--header-fg);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .theme-btns label:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        #t-default:checked ~ .page .theme-btns label[for="t-default"],
+        #t-dark:checked ~ .page .theme-btns label[for="t-dark"],
+        #t-ocean:checked ~ .page .theme-btns label[for="t-ocean"],
+        #t-warm:checked ~ .page .theme-btns label[for="t-warm"] {
+            background: rgba(255,255,255,0.3);
+            border-color: #fff;
+            font-weight: bold;
+        }
+
+        /* SIDEBAR NAV */
+        .sidebar {
+            background: var(--nav-bg);
+            color: var(--nav-fg);
+            padding: 20px 15px;
+            border-right: 1px solid var(--border);
+            transition: all 0.5s ease;
+        }
+        .sidebar h3 {
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        .sidebar hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin-bottom: 15px;
+        }
+        .sidebar ul {
+            list-style-type: square;
+            padding-left: 20px;
+        }
+        .sidebar li { margin-bottom: 14px; }
+        .sidebar a {
+            color: var(--link);
+            text-decoration: none;
+            font-size: 15px;
+            transition: color 0.3s ease;
+        }
+        .sidebar a:hover { text-decoration: underline; }
+        .sidebar .sub-text {
+            font-size: 12px;
+            color: var(--muted);
+            transition: color 0.5s ease;
+        }
+
+        /* MAIN CONTENT */
+        .main-content {
+            background: var(--main-bg);
+            color: var(--main-fg);
+            padding: 30px;
+            overflow-y: auto;
+            transition: all 0.5s ease;
+        }
+        .main-content h2 {
+            text-align: center;
+            color: var(--heading);
+            margin-bottom: 5px;
+            transition: color 0.5s ease;
+        }
+        .main-content .subtitle {
+            text-align: center;
+            font-style: italic;
+            color: var(--muted);
+            margin-bottom: 20px;
+            transition: color 0.5s ease;
+        }
+        .main-content hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin-bottom: 25px;
+            transition: border-color 0.5s ease;
+        }
+
+        /* FORM */
+        .form-box {
+            max-width: 600px;
+            margin: 0 auto;
+            background: var(--field-bg);
+            border: 1px solid var(--border);
+            padding: 25px;
+            border-radius: 6px;
+            transition: all 0.5s ease;
+        }
+        fieldset {
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 20px;
+            transition: border-color 0.5s ease;
+        }
+        legend {
+            font-weight: bold;
+            color: var(--heading);
+            padding: 0 8px;
+            transition: color 0.5s ease;
+        }
+        .form-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .form-row label {
+            width: 140px;
+            font-size: 14px;
+            color: var(--main-fg);
+            transition: color 0.5s ease;
+        }
+        .form-row input[type="text"],
+        .form-row input[type="date"],
+        .form-row input[type="file"],
+        .form-row select {
+            flex: 1;
+            padding: 6px 10px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            background: var(--main-bg);
+            color: var(--main-fg);
+            font-size: 14px;
+            transition: all 0.5s ease;
+        }
+        .form-row .hint {
+            font-size: 11px;
+            color: var(--muted);
+            transition: color 0.5s ease;
+        }
+        .form-actions {
+            text-align: center;
+            margin-top: 15px;
+        }
+        .form-actions input[type="submit"],
+        .form-actions input[type="reset"] {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 0 5px;
+            transition: all 0.4s ease;
+        }
+        .form-actions input[type="submit"] {
+            background: var(--btn-bg);
+            color: var(--btn-fg);
+        }
+        .form-actions input[type="reset"] {
+            background: var(--field-bg);
+            color: var(--main-fg);
+            border: 1px solid var(--border);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 700px) {
+            .page { grid-template-columns: 1fr; }
+            .header {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+            .header h1 { font-size: 18px; }
+            .sidebar {
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+            }
+            .sidebar ul {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0 20px;
+                list-style: none;
+                padding: 0;
+                justify-content: center;
+            }
+            .sidebar h3, .sidebar hr { display: none; }
+            .form-row {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .form-row label {
+                width: 100%;
+                margin-bottom: 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- theme radios before the page for :checked ~ .page to work -->
+    <input type="radio" name="site-theme" id="t-default" checked>
+    <input type="radio" name="site-theme" id="t-dark">
+    <input type="radio" name="site-theme" id="t-ocean">
+    <input type="radio" name="site-theme" id="t-warm">
+
+    <div class="page">
+        <header class="header">
+            <h1>B.Tech Question Bank &amp; Syllabus Portal</h1>
+            <div class="theme-btns">
+                <label for="t-default">Default</label>
+                <label for="t-dark">Dark</label>
+                <label for="t-ocean">Ocean</label>
+                <label for="t-warm">Warm</label>
+            </div>
+        </header>
+
+        <nav class="sidebar">
+            <h3>Main Menu</h3>
+            <hr>
+            <ul>
+                <li><a href="#">Registration Form</a></li>
+                <li>
+                    <a href="#">Course Structure</a><br>
+                    <span class="sub-text">(Requires Reg.)</span>
+                </li>
+                <li><a href="#">Question Paper (DBMS)</a></li>
+                <li><a href="#">Student Blog</a></li>
+            </ul>
+        </nav>
+
+        <main class="main-content">
+            <h2>User Registration</h2>
+            <p class="subtitle">Please fill out this form to access the Question Bank and Course Structure.</p>
+            <hr>
+
+            <div class="form-box">
+                <form>
+                    <fieldset>
+                        <legend>Personal Details</legend>
+                        <div class="form-row">
+                            <label>Full Name:</label>
+                            <input type="text" name="fullname" placeholder="Enter your name" required>
+                        </div>
+                        <div class="form-row">
+                            <label>Date of Birth:</label>
+                            <input type="date" name="dob" min="1995-01-01" max="2010-12-31" required>
+                        </div>
+                        <div class="form-row">
+                            <label>Upload Photo:</label>
+                            <input type="file" name="photo" accept="image/*">
+                        </div>
+                    </fieldset>
+
+                    <fieldset>
+                        <legend>Academic Details</legend>
+                        <div class="form-row">
+                            <label>Roll Number:<br><span class="hint">Format: CS2026</span></label>
+                            <input type="text" name="rollno" pattern="[A-Z]{2}[0-9]{4}" title="2 uppercase letters + 4 digits" required>
+                        </div>
+                        <div class="form-row">
+                            <label>Department:</label>
+                            <input type="text" name="dept" list="departments" placeholder="Select branch...">
+                            <datalist id="departments">
+                                <option value="Computer Science">
+                                <option value="Information Technology">
+                                <option value="Electrical Engineering">
+                                <option value="Mechanical Engineering">
+                                <option value="Civil Engineering">
+                            </datalist>
+                        </div>
+                        <div class="form-row">
+                            <label>Semester:</label>
+                            <select name="semester">
+                                <option>Semester 1</option>
+                                <option>Semester 2</option>
+                                <option>Semester 3</option>
+                                <option>Semester 4</option>
+                            </select>
+                        </div>
+                    </fieldset>
+
+                    <div class="form-actions">
+                        <input type="submit" value="Register & Access Courses">
+                        <input type="reset" value="Clear Form">
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,13 @@
+/* External CSS - styles for the first paragraph */
+.para-external {
+    background-color: #e8f4fd;
+    color: #1a3a5c;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 18px;
+    text-align: justify;
+    padding: 20px 25px;
+    margin: 20px auto;
+    max-width: 750px;
+    line-height: 1.8;
+    border-radius: 4px;
+}

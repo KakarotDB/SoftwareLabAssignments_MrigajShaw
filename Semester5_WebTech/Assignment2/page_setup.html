@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Setup</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; }
+
+        /* hide theme radios visually */
+        input[name="theme"] {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* ---- LIGHT THEME (default) ---- */
+        .wrapper {
+            --bg: #ffffff;
+            --fg: #333333;
+            --border: #d0d0d0;
+            --accent: #4a7fc7;
+            --input-bg: #fafafa;
+            --section-bg: #f5f5f5;
+            --muted: #777777;
+            --page-bg: #e8e8e8;
+
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 15px;
+            background-color: var(--page-bg);
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+
+        /* ---- DARK THEME ---- */
+        #dark:checked ~ .wrapper {
+            --bg: #222222;
+            --fg: #e0e0e0;
+            --border: #555555;
+            --accent: #5b9bd5;
+            --input-bg: #2c2c2c;
+            --section-bg: #2a2a2a;
+            --muted: #999999;
+            --page-bg: #181818;
+        }
+
+        /* ---- HIGH CONTRAST THEME ---- */
+        #contrast:checked ~ .wrapper {
+            --bg: #000000;
+            --fg: #ffffff;
+            --border: #ffffff;
+            --accent: #ffd700;
+            --input-bg: #111111;
+            --section-bg: #0a0a0a;
+            --muted: #ffd700;
+            --page-bg: #000000;
+        }
+
+        /* theme picker labels */
+        .theme-picker {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .theme-picker label {
+            padding: 8px 18px;
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            background: var(--bg);
+            color: var(--fg);
+            font-size: 14px;
+            transition: all 0.4s ease;
+        }
+        .theme-picker label:hover {
+            border-color: var(--accent);
+        }
+        #light:checked ~ .wrapper .theme-picker label[for="light"],
+        #dark:checked ~ .wrapper .theme-picker label[for="dark"],
+        #contrast:checked ~ .wrapper .theme-picker label[for="contrast"] {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+        }
+
+        /* the window */
+        .window {
+            width: 100%;
+            max-width: 600px;
+            background: var(--bg);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.5s ease;
+        }
+
+        .title-bar {
+            background: var(--accent);
+            color: #ffffff;
+            padding: 10px 18px;
+            font-weight: bold;
+            font-size: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.5s ease;
+        }
+        .title-bar .dots span {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-left: 6px;
+        }
+
+        .body-content {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .section {
+            background: var(--section-bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 15px;
+            transition: all 0.5s ease;
+        }
+        .section h3 {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--accent);
+            margin-bottom: 12px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid var(--border);
+            transition: all 0.5s ease;
+        }
+
+        .field {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .field label {
+            font-size: 13px;
+            color: var(--muted);
+            transition: color 0.5s ease;
+        }
+        .field input[type="number"],
+        .field select {
+            width: 90px;
+            padding: 5px 8px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            background: var(--input-bg);
+            color: var(--fg);
+            font-size: 13px;
+            transition: all 0.5s ease;
+        }
+
+        .orient-group { margin-top: 8px; }
+        .orient-group label {
+            font-size: 13px;
+            color: var(--fg);
+            margin-right: 12px;
+            cursor: pointer;
+            transition: color 0.5s ease;
+        }
+
+        /* mini page preview */
+        .preview-area {
+            grid-column: 1 / -1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+        }
+        .mini-page {
+            width: 100px;
+            height: 140px;
+            border: 2px solid var(--accent);
+            background: var(--input-bg);
+            position: relative;
+            transition: all 0.5s ease;
+        }
+        .mini-page .margins {
+            position: absolute;
+            top: 14%; left: 16%; right: 16%; bottom: 14%;
+            border: 1px dashed var(--border);
+            transition: border-color 0.5s ease;
+        }
+        .mini-page .line {
+            position: absolute;
+            left: 20%; right: 20%;
+            height: 2px;
+            background: var(--border);
+            transition: background-color 0.5s ease;
+        }
+        .mini-page .line:nth-child(2) { top: 30%; }
+        .mini-page .line:nth-child(3) { top: 42%; width: 50%; }
+        .mini-page .line:nth-child(4) { top: 54%; }
+        .mini-page .line:nth-child(5) { top: 66%; width: 40%; }
+
+        .preview-label {
+            margin-top: 8px;
+            font-size: 12px;
+            color: var(--muted);
+            transition: color 0.5s ease;
+        }
+
+        /* footer buttons */
+        .footer {
+            padding: 12px 20px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            transition: border-color 0.5s ease;
+        }
+        .btn {
+            padding: 7px 20px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            background: var(--section-bg);
+            color: var(--fg);
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+        }
+        .btn:hover { border-color: var(--accent); }
+        .btn-ok {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+        }
+
+        /* responsive */
+        @media (max-width: 550px) {
+            .body-content { grid-template-columns: 1fr; }
+            .preview-area { grid-column: 1; }
+            .theme-picker {
+                flex-direction: column;
+                align-items: stretch;
+                width: 100%;
+                max-width: 600px;
+            }
+            .theme-picker label { text-align: center; }
+        }
+    </style>
+</head>
+<body>
+    <!-- radio buttons placed BEFORE the window for :checked ~ .window to work -->
+    <input type="radio" name="theme" id="light" checked>
+    <input type="radio" name="theme" id="dark">
+    <input type="radio" name="theme" id="contrast">
+
+    <div class="wrapper">
+        <div class="theme-picker">
+            <label for="light">☀ Light</label>
+            <label for="dark">🌙 Dark</label>
+            <label for="contrast">◐ High Contrast</label>
+        </div>
+
+        <div class="window">
+            <div class="title-bar">
+                <span>Page Setup</span>
+                <div class="dots">
+                    <span style="background:#ff5f57;"></span>
+                    <span style="background:#ffbd2e;"></span>
+                    <span style="background:#28c940;"></span>
+                </div>
+            </div>
+
+            <div class="body-content">
+                <!-- Margins section -->
+                <div class="section">
+                    <h3>Margins (inches)</h3>
+                    <div class="field">
+                        <label>Top:</label>
+                        <input type="number" value="1.0" step="0.1" min="0">
+                    </div>
+                    <div class="field">
+                        <label>Bottom:</label>
+                        <input type="number" value="1.0" step="0.1" min="0">
+                    </div>
+                    <div class="field">
+                        <label>Left:</label>
+                        <input type="number" value="1.25" step="0.1" min="0">
+                    </div>
+                    <div class="field">
+                        <label>Right:</label>
+                        <input type="number" value="1.25" step="0.1" min="0">
+                    </div>
+                </div>
+
+                <!-- Paper & Orientation section -->
+                <div class="section">
+                    <h3>Paper</h3>
+                    <div class="field">
+                        <label>Size:</label>
+                        <select>
+                            <option>A4</option>
+                            <option>Letter</option>
+                            <option>Legal</option>
+                            <option>A3</option>
+                        </select>
+                    </div>
+                    <h3 style="margin-top: 15px;">Orientation</h3>
+                    <div class="orient-group">
+                        <label><input type="radio" name="orient" checked> Portrait</label>
+                        <label><input type="radio" name="orient"> Landscape</label>
+                    </div>
+                </div>
+
+                <!-- Preview -->
+                <div class="preview-area">
+                    <div class="mini-page">
+                        <div class="margins"></div>
+                        <div class="line"></div>
+                        <div class="line"></div>
+                        <div class="line"></div>
+                        <div class="line"></div>
+                    </div>
+                    <span class="preview-label">Preview</span>
+                </div>
+            </div>
+
+            <div class="footer">
+                <button class="btn">Cancel</button>
+                <button class="btn btn-ok">OK</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
