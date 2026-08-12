@@ -1,6 +1,6 @@
-PWD c:\Users\sucha\SoftwareLabAssignments_MrigajShaw\Semester5_DBMS\Reports
+PWD c:\Users\sucha\SoftwareLabAssignments_MrigajShaw\Semester5_DBMS\Reports\Assignment_1
 INPUT C:\Users\sucha\AppData\Local\MiKTeX\miktex\data\le\pdftex\pdflatex.fmt
-INPUT c:\Users\sucha\SoftwareLabAssignments_MrigajShaw\Semester5_DBMS\Reports\Assignment_1.tex
+INPUT c:\Users\sucha\SoftwareLabAssignments_MrigajShaw\Semester5_DBMS\Reports\Assignment_1\Assignment_1.tex
 OUTPUT Assignment_1.log
 INPUT C:\Users\sucha\AppData\Local\Programs\MiKTeX\tex\latex\base\article.cls
 INPUT C:\Users\sucha\AppData\Local\Programs\MiKTeX\tex\latex\base\article.cls
