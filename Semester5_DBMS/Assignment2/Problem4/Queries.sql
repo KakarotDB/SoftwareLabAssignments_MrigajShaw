@@ -12,4 +12,12 @@ SELECT
   cr.marks
 FROM
   crs_regd cr
-  JOIN students s ON s.rollno = cr.crs_rollno
+  JOIN students s ON s.rollno = cr.crs_rollno;
+
+-- Q3: Find age of all students  
+SELECT
+  name,
+  rollno,
+  AGE (CURRENT_DATE, bdate) as age
+FROM
+  students;

@@ -35,7 +35,8 @@ VALUES
   ('CH103', 'Chemistry', 3.0, 'avm     '),
   ('PH106', 'Physics', 8.0, 'pks     '),
   ('ME101', 'Thermodynamics', 7.5, 'vkr     '),
-  ('IT101', 'Data Structures', 4.0, 'mns     ');
+  ('IT101', 'Data Structures', 4.0, 'mns     '),
+  ('CS105', 'Advanced Algorithms', 4.0, 'rkj     ');
 
 INSERT INTO
   students (rollno, name, bdate, deptcode, hostel, parent_inc)
@@ -164,6 +165,7 @@ VALUES
 INSERT INTO
   crs_regd (crs_rollno, crs_cd, marks)
 VALUES
+  (92005001, 'CS105', 88.00),
   (92005001, 'CS101', 85.50),
   (92005001, 'CS102', 72.00),
   (92005001, 'CS103', 68.00),
@@ -198,3 +200,26 @@ VALUES
   (92005104, 'IT101', 76.00),
   (92005104, 'CS101', 58.00),
   (92005106, 'ME101', 71.00);
+
+INSERT INTO
+  faculty (fac_code, fac_name, fac_dept)
+VALUES
+  ('aem1', 'Dr. A.E. Mech', 'AEM'),
+  ('mme1', 'Dr. M.M. Engg', 'MME');
+
+INSERT INTO
+  crs_offrd (crs_code, crs_name, crs_credits, crs_fac_cd)
+VALUES
+  ('AE101', 'Aerodynamics', 4.0, 'aem1'),
+  ('MM101', 'Metallurgy', 4.0, 'mme1');
+
+INSERT INTO
+  crs_regd (crs_rollno, crs_cd, marks)
+VALUES
+  (92005001, 'AE101', 80.00),
+  (92005001, 'MM101', 85.00);
+
+INSERT INTO
+  crs_regd (crs_rollno, crs_cd, marks)
+VALUES
+  (92005002, 'CS104', 82.00);
