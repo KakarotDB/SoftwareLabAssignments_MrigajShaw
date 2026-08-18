@@ -223,3 +223,122 @@ INSERT INTO
   crs_regd (crs_rollno, crs_cd, marks)
 VALUES
   (92005002, 'CS104', 82.00);
+
+-- inserting architecture dept 
+INSERT INTO
+  depts (deptcode, deptname)
+VALUES
+  ('ARC', 'Architecture');
+
+-- Inserting new students with parent incomes below 12,000
+INSERT INTO
+  students (rollno, name, bdate, deptcode, hostel, parent_inc)
+VALUES
+  (
+    92005201,
+    'Aarav Sharma',
+    '1996-05-12',
+    'CSE',
+    1,
+    10000.0
+  ),
+  (
+    92005202,
+    'Diya Patel',
+    '1995-08-20',
+    'CSE',
+    2,
+    11500.0
+  ),
+  (
+    92005203,
+    'Kabir Mehta',
+    '1996-03-11',
+    'ELE',
+    3,
+    8500.0
+  ),
+  (
+    92005204,
+    'Ishita Sen',
+    '1995-12-01',
+    'ELE',
+    4,
+    9500.0
+  ),
+  (
+    92005205,
+    'Rohan Bose',
+    '1996-01-22',
+    'IT ',
+    5,
+    11800.0
+  ),
+  (
+    92005206,
+    'Tanya Roy',
+    '1995-10-10',
+    'ARC',
+    6,
+    11000.0
+  );
+
+INSERT INTO
+  students (rollno, name, bdate, deptcode, hostel, parent_inc)
+VALUES
+  (
+    92005301,
+    'Arjun Singh',
+    '1995-02-14',
+    'CSE',
+    5,
+    800000.0
+  ),
+  (
+    92005302,
+    'Priya Das',
+    '1996-07-09',
+    'IT ',
+    5,
+    750000.0
+  ),
+  (
+    92005303,
+    'Karan Sharma',
+    '1995-11-20',
+    'ELE',
+    5,
+    600000.0
+  ),
+  (
+    92005304,
+    'Anjali Verma',
+    '1996-04-05',
+    'CST',
+    5,
+    500000.0
+  ),
+  (
+    92005305,
+    'Rahul Gupta',
+    '1995-09-12',
+    'MME ',
+    5,
+    450000.0
+  ),
+  (
+    92005306,
+    'Sneha Patel',
+    '1996-01-25',
+    'CE ',
+    5,
+    400000.0
+  ),
+  (
+    92005307,
+    'Vikash Kumar',
+    '1995-06-30',
+    'EE ',
+    5,
+    300000.0
+  );
