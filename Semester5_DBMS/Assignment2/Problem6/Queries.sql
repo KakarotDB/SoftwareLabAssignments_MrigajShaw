@@ -38,3 +38,34 @@ WHERE
     WHERE
       s2.parent_inc > s1.parent_inc
   );
+
+-- Q3: Find the roll number of the students from each department who obtained highest total marks in their own department.
+SELECT
+  s1.name,
+  s1.rollno,
+  s1.deptcode,
+  SUM(cr1.marks) as total_marks
+FROM
+  students s1
+  JOIN crs_regd cr1 ON cr1.crs_rollno = s1.rollno
+GROUP BY
+  s1.rollno,
+  s1.deptcode
+HAVING
+  SUM(cr1.marks) = (
+    SELECT
+      SUM(cr2.marks)
+    FROM
+      students s2
+      JOIN crs_regd cr2 ON s2.rollno = cr2.crs_rollno
+    WHERE
+      s2.deptcode = s1.deptcode
+    GROUP by
+      s2.rollno
+    ORDER BY
+      (SUM(cr2.marks)) DESC
+    LIMIT
+      1
+  )
+ORDER BY
+  total_marks DESC;
