@@ -8,11 +8,22 @@ WHERE
 
 -- Q2 : Retrieve the name of the youngest student(s) from the ‘CST’ department along with the total marks obtained by him (them).
 SELECT
-  s.name,
-  cr.marks
+  name,
+  SUM(marks) total_marks,
+  AGE (CURRENT_DATE, bdate) as student_age
 FROM
-  crs_regd cr
-  JOIN students s ON s.rollno = cr.crs_rollno;
+  students
+  JOIN crs_regd on crs_regd.crs_rollno = students.rollno
+WHERE
+  AGE (CURRENT_DATE, bdate) = (
+    SELECT
+      MIN(AGE (CURRENT_DATE, bdate))
+    FROM
+      students
+  )
+GROUP BY
+  students.name,
+  student_age;
 
 -- Q3: Find age of all students  
 SELECT

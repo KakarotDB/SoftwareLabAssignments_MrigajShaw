@@ -49,23 +49,27 @@ FROM
   students s1
   JOIN crs_regd cr1 ON cr1.crs_rollno = s1.rollno
 GROUP BY
+  s1.name,
   s1.rollno,
   s1.deptcode
 HAVING
   SUM(cr1.marks) = (
     SELECT
-      SUM(cr2.marks)
+      (MAX(dept_totals.total))
     FROM
-      students s2
-      JOIN crs_regd cr2 ON s2.rollno = cr2.crs_rollno
+      (
+        SELECT
+          s2.deptcode,
+          SUM(cr2.marks) as total
+        FROM
+          students s2
+          JOIN crs_regd cr2 ON cr2.crs_rollno = s2.rollno
+        GROUP BY
+          s2.rollno,
+          s2.deptcode
+      ) as dept_totals
     WHERE
-      s2.deptcode = s1.deptcode
-    GROUP by
-      s2.rollno
-    ORDER BY
-      (SUM(cr2.marks)) DESC
-    LIMIT
-      1
+      dept_totals.deptcode = s1.deptcode
   )
 ORDER BY
-  total_marks DESC;
+  total_marks;
