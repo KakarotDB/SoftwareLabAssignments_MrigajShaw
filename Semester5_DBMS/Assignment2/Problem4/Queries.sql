@@ -4,7 +4,7 @@ SELECT
 FROM
   students
 WHERE
-  name LIKE 'S%r_';
+  TRIM(name) LIKE 'S%r_';
 
 -- Q2 : Retrieve the name of the youngest student(s) from the ‘CST’ department along with the total marks obtained by him (them).
 SELECT
@@ -15,11 +15,14 @@ FROM
   students
   JOIN crs_regd on crs_regd.crs_rollno = students.rollno
 WHERE
-  AGE (CURRENT_DATE, bdate) = (
+  students.deptcode = 'CST'
+  AND AGE (CURRENT_DATE, bdate) = (
     SELECT
       MIN(AGE (CURRENT_DATE, bdate))
     FROM
       students
+    WHERE
+      deptcode = 'CST'
   )
 GROUP BY
   students.name,

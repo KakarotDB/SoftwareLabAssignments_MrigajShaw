@@ -342,3 +342,21 @@ VALUES
     5,
     300000.0
   );
+
+INSERT INTO
+  students (rollno, name, bdate, deptcode, hostel, parent_inc)
+VALUES
+  (
+    92005405,
+    'Swati Mitra',
+    '1996-08-14',
+    'CSE',
+    1,
+    450000.0
+  );
+
+INSERT INTO
+  crs_regd (crs_rollno, crs_cd, marks)
+VALUES
+  (92005304, 'CS101', 85.00),
+  (92005304, 'CS102', 91.00);

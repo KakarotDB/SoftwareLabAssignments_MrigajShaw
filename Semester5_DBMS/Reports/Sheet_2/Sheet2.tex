@@ -1,0 +1,381 @@
+\documentclass[11pt, a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tabularx}
+
+% Configure SQL code block styling
+\lstset{
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue}\bfseries,
+    stringstyle=\color{red!70!black},
+    commentstyle=\color{green!60!black}\itshape,
+    frame=single,
+    backgroundcolor=\color{gray!5},
+    breaklines=true,
+    showstringspaces=false
+}
+
+\title{Sheet 2 Lab Report}
+\author{Mrigaj Shaw}
+\date{Roll No: 2024CSB041}
+
+\begin{document}
+
+\maketitle
+
+\section{Problem4}
+\subsection*{Q1 : Retrieve the name of students whose name start with 'S' and contains 'r' as the second last character}
+\begin{lstlisting}[language=SQL]
+SELECT
+  name
+FROM
+  students
+WHERE
+  TRIM(name) LIKE 'S%r_';
+\end{lstlisting}
+\vspace{0.3cm}
+\textbf{Output:}\vspace{0.2cm}
+\begin{center}
+\begin{tabular}{|l|}
+\hline
+\textbf{name} \\ \hline
+Swati Mitra                    \\ \hline
+\end{tabular}
+\end{center}
+\newpage
+\subsection*{Q2 : Retrieve the name of the youngest student(s) from the ‘CST’ department along with the total marks obtained by him (them).}
+\begin{lstlisting}[language=SQL]
+SELECT
+  students.name,
+  SUM(crs_regd.marks) as total_marks,
+  AGE(CURRENT_DATE, students.bdate) as student_age
+FROM
+  students
+  JOIN crs_regd ON crs_regd.crs_rollno = students.rollno
+WHERE
+  students.deptcode = 'CST'
+  AND AGE(CURRENT_DATE, students.bdate) = (
+    SELECT
+      MIN(AGE(CURRENT_DATE, bdate))
+    FROM
+      students
+    WHERE
+      deptcode = 'CST'
+  )
+GROUP BY
+  students.rollno,
+  students.name,
+  students.bdate;
+\end{lstlisting}
+\vspace{0.3cm}
+\textbf{Output:}\vspace{0.2cm}
+\begin{center}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{name} & \textbf{total\_marks} & \textbf{student\_age} \\ \hline
+Anjali Verma                   & 176.00 & 30 years 4 mons 20 days \\ \hline
+\end{tabular}
+\end{center}
+\newpage
+\subsection*{Q3: Find age of all students}
+\begin{lstlisting}[language=SQL]
+SELECT
+  name,
+  rollno,
+  AGE (CURRENT_DATE, bdate) as age
+FROM
+  students;
+\end{lstlisting}
+\vspace{0.3cm}
+\textbf{Output:}\vspace{0.2cm}
+\begin{center}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{name} & \textbf{rollno} & \textbf{age} \\ \hline
+Riddhi Agarwal                 & 92005001 & 31 years 5 mons 10 days \\ \hline
+Priya Verma                    & 92005002 & 30 years 1 mon 3 days \\ \hline
+Rahul Das                      & 92005003 & 30 years 9 mons 15 days \\ \hline
+Sneha Gupta                    & 92005004 & 30 years 7 mons 20 days \\ \hline
+Ravi Kumar                     & 92005010 & 31 years 2 mons 7 days \\ \hline
+Neha Patil                     & 92005011 & 29 years 10 mons 26 days \\ \hline
+Vikram Singh                   & 92005012 & 30 years 8 mons \\ \hline
+Ananya Roy                     & 92005013 & 30 years 4 mons 11 days \\ \hline
+Suresh Nair                    & 92005100 & 31 years 17 days \\ \hline
+Kavita Jain                    & 92005101 & 30 years 5 mons 28 days \\ \hline
+Deepak Mehta                   & 92005102 & 31 years 3 mons 5 days \\ \hline
+Pooja Reddy                    & 92005103 & 29 years 10 mons 13 days \\ \hline
+Arun Bhat                      & 92005104 & 31 years 6 mons 26 days \\ \hline
+Meera Iyer                     & 92005105 & 30 years 2 mons 20 days \\ \hline
+Kiran Desai                    & 92005106 & 30 years 11 mons 8 days \\ \hline
+Aarav Sharma                   & 92005201 & 30 years 3 mons 13 days \\ \hline
+Diya Patel                     & 92005202 & 31 years 5 days \\ \hline
+Kabir Mehta                    & 92005203 & 30 years 5 mons 14 days \\ \hline
+Ishita Sen                     & 92005204 & 30 years 8 mons 24 days \\ \hline
+Rohan Bose                     & 92005205 & 30 years 7 mons 3 days \\ \hline
+Tanya Roy                      & 92005206 & 30 years 10 mons 15 days \\ \hline
+Arjun Singh                    & 92005301 & 31 years 6 mons 11 days \\ \hline
+Priya Das                      & 92005302 & 30 years 1 mon 16 days \\ \hline
+Karan Sharma                   & 92005303 & 30 years 9 mons 5 days \\ \hline
+Anjali Verma                   & 92005304 & 30 years 4 mons 20 days \\ \hline
+Rahul Gupta                    & 92005305 & 30 years 11 mons 13 days \\ \hline
+Sneha Patel                    & 92005306 & 30 years 7 mons \\ \hline
+Vikash Kumar                   & 92005307 & 31 years 1 mon 26 days \\ \hline
+Swati Mitra                    & 92005405 & 30 years 11 days \\ \hline
+\end{tabular}
+\end{center}
+\newpage
+\section{Problem5}
+\subsection*{Q1 : Retrieve the name of the student(s) who obtained second highest marks in ‘DBMS’.}
+\begin{lstlisting}[language=SQL]
+SELECT
+  s1.name
+FROM
+  crs_regd cr1
+  JOIN students s1 ON s1.rollno = cr1.crs_rollno
+  JOIN crs_offrd co ON co.crs_code = cr1.crs_cd
+WHERE
+  TRIM(co.crs_name) = 'DBMS'
+  AND 1 = (
+    SELECT
+      COUNT(DISTINCT cr2.marks)
+    FROM
+      crs_regd cr2
+      JOIN crs_offrd co2 ON co2.crs_code = cr2.crs_cd
+    WHERE
+      TRIM(co2.crs_name) = 'DBMS'
+      AND cr2.marks > cr1.marks
+  );
+\end{lstlisting}
+\vspace{0.3cm}
+\textbf{Output:}\vspace{0.2cm}
+\begin{center}
+\begin{tabular}{|l|}
+\hline
+\textbf{name} \\ \hline
+Riddhi Agarwal                 \\ \hline
+\end{tabular}
+\end{center}
+\newpage
+\subsection*{Q2: Find out the differences between the highest and lowest marks obtained in each subject}
+\begin{lstlisting}[language=SQL]
+SELECT
+  co.crs_name,
+  MAX(marks) - MIN(marks) as marks_Difference
+FROM
+  crs_offrd co
+  JOIN crs_regd cr ON cr.crs_cd = co.crs_code
+GROUP BY
+  crs_name;
+\end{lstlisting}
+\vspace{0.3cm}
+\textbf{Output:}\vspace{0.2cm}
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{crs\_name} & \textbf{marks\_difference} \\ \hline
+Thermodynamics                      & 6.00 \\ \hline
+Metallurgy                          & 0.00 \\ \hline
+DBMS                                & 62.00 \\ \hline
+Chemistry                           & 28.00 \\ \hline
+Software Engg.                      & 0.00 \\ \hline
+Aerodynamics                        & 0.00 \\ \hline
+Circuit Theory                      & 12.00 \\ \hline
+Physics                             & 35.00 \\ \hline
+Data Structures                     & 6.00 \\ \hline
+Advanced Algorithms                 & 0.00 \\ \hline
+OS                                  & 16.00 \\ \hline
+MIS                                 & 9.00 \\ \hline
+Basic Architecture                  & 0.00 \\ \hline
+Signal Processing                   & 25.00 \\ \hline
+\end{tabular}
+\end{center}
+\newpage
+\subsection*{Q3 : Assuming the existance of several interdepartmental courses, retrieve the name of the student(s) who is(are) studing under at least one faculty from each department.}
+\begin{lstlisting}[language=SQL]
+SELECT
+  name,
+  rollno
+FROM
+  students
+  JOIN crs_regd ON crs_regd.crs_rollno = students.rollno
+  JOIN crs_offrd ON crs_regd.crs_cd = crs_offrd.crs_code
+  JOIN faculty on faculty.fac_code = crs_offrd.crs_fac_cd
+GROUP BY
+  name,
+  rollno
+HAVING
+  COUNT(DISTINCT TRIM(faculty.fac_dept)) = (
+    SELECT
+      COUNT(DISTINCT TRIM(deptcode))
+    FROM
+      depts
+  );
+\end{lstlisting}
+\vspace{0.3cm}
+\textbf{Output:}\vspace{0.2cm}
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{name} & \textbf{rollno} \\ \hline
+Riddhi Agarwal                 & 92005001 \\ \hline
+\end{tabular}
+\end{center}
+\newpage
+\subsection*{Q4: Assuming the existance of several interdepartmental courses, retrieve the name of the student(s) who is(are) studing under the faculties only from his(their) own department.}
+\begin{lstlisting}[language=SQL]
+SELECT
+  name,
+  rollno
+FROM
+  students
+  JOIN crs_regd ON crs_regd.crs_rollno = students.rollno
+  JOIN crs_offrd ON crs_regd.crs_cd = crs_offrd.crs_code
+  JOIN faculty on TRIM(faculty.fac_code) = TRIM(crs_offrd.crs_fac_cd)
+GROUP BY
+  name,
+  rollno,
+  deptcode
+HAVING
+  COUNT(DISTINCT TRIM(faculty.fac_dept)) = 1
+  AND MAX(TRIM(faculty.fac_dept)) = TRIM(students.deptcode)
+  AND COUNT(DISTINCT TRIM(faculty.fac_code)) = (
+    SELECT
+      COUNT(DISTINCT TRIM(faculty.fac_code))
+    FROM
+      faculty
+    WHERE
+      TRIM(fac_dept) = TRIM(deptcode)
+  );
+\end{lstlisting}
+\vspace{0.3cm}
+\textbf{Output:}\vspace{0.2cm}
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{name} & \textbf{rollno} \\ \hline
+Priya Verma                    & 92005002 \\ \hline
+\end{tabular}
+\end{center}
+\newpage
+\section{Problem6}
+\subsection*{Q1: Display the highest parent incomes, in descending order, for each department excluding ‘ARCH’ such that only those highest parent incomes will appear that are below 12,000.}
+\begin{lstlisting}[language=SQL]
+SELECT
+  s1.rollno,
+  s1.name,
+  s1.deptcode,
+  s1.parent_inc
+FROM
+  students s1
+WHERE
+  deptcode != 'ARC'
+  AND parent_inc < 12000
+  AND s1.parent_inc = (
+    SELECT
+      MAX(s2.parent_inc)
+    FROM
+      students s2
+    WHERE
+      s1.deptcode = s2.deptcode
+      AND s2.deptcode != 'ARC'
+      AND s2.parent_inc < 12000
+  )
+ORDER BY
+  s1.parent_inc DESC;
+\end{lstlisting}
+\vspace{0.3cm}
+\textbf{Output:}\vspace{0.2cm}
+\begin{center}
+\begin{tabular}{|l|l|l|l|}
+\hline
+\textbf{rollno} & \textbf{name} & \textbf{deptcode} & \textbf{parent\_inc} \\ \hline
+92005205 & Rohan Bose                     & IT  & 11800.0 \\ \hline
+92005202 & Diya Patel                     & CSE & 11500.0 \\ \hline
+92005204 & Ishita Sen                     & ELE & 9500.0 \\ \hline
+\end{tabular}
+\end{center}
+\newpage
+\subsection*{Q2: Retrieve the 5th largest parental income for hostel no. 5}
+\begin{lstlisting}[language=SQL]
+SELECT
+  s1.rollno,
+  s1.name,
+  s1.parent_inc
+FROM
+  students s1
+WHERE
+  4 = (
+    SELECT
+      COUNT(DISTINCT s2.parent_inc)
+    FROM
+      students s2
+    WHERE
+      s2.parent_inc > s1.parent_inc
+  );
+\end{lstlisting}
+\vspace{0.3cm}
+\textbf{Output:}\vspace{0.2cm}
+\begin{center}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{rollno} & \textbf{name} & \textbf{parent\_inc} \\ \hline
+92005101 & Kavita Jain                    & 650000.0 \\ \hline
+\end{tabular}
+\end{center}
+\newpage
+\subsection*{Q3: Find the roll number of the students from each department who obtained highest total marks in their own department.}
+\begin{lstlisting}[language=SQL]
+SELECT
+  s1.name,
+  s1.rollno,
+  s1.deptcode,
+  SUM(cr1.marks) as total_marks
+FROM
+  students s1
+  JOIN crs_regd cr1 ON cr1.crs_rollno = s1.rollno
+GROUP BY
+  s1.name,
+  s1.rollno,
+  s1.deptcode
+HAVING
+  SUM(cr1.marks) = (
+    SELECT
+      (MAX(dept_totals.total))
+    FROM
+      (
+        SELECT
+          s2.deptcode,
+          SUM(cr2.marks) as total
+        FROM
+          students s2
+          JOIN crs_regd cr2 ON cr2.crs_rollno = s2.rollno
+        GROUP BY
+          s2.rollno,
+          s2.deptcode
+      ) as dept_totals
+    WHERE
+      dept_totals.deptcode = s1.deptcode
+  )
+ORDER BY
+  total_marks;
+\end{lstlisting}
+\vspace{0.3cm}
+\textbf{Output:}\vspace{0.2cm}
+\begin{center}
+\begin{tabular}{|l|l|l|l|}
+\hline
+\textbf{name} & \textbf{rollno} & \textbf{deptcode} & \textbf{total\_marks} \\ \hline
+Kiran Desai                    & 92005106 & MME & 71.00 \\ \hline
+Ravi Kumar                     & 92005010 & ELE & 125.00 \\ \hline
+Arun Bhat                      & 92005104 & IT  & 134.00 \\ \hline
+Pooja Reddy                    & 92005103 & EE  & 175.00 \\ \hline
+Deepak Mehta                   & 92005102 & ETC & 187.00 \\ \hline
+Suresh Nair                    & 92005100 & CST & 295.00 \\ \hline
+Riddhi Agarwal                 & 92005001 & CSE & 1101.00 \\ \hline
+\end{tabular}
+\end{center}
+\newpage
+
+\end{document}
