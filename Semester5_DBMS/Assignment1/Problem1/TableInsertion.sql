@@ -360,3 +360,36 @@ INSERT INTO
 VALUES
   (92005304, 'CS101', 85.00),
   (92005304, 'CS102', 91.00);
+
+INSERT INTO
+  depts
+VALUES
+  ('MEC', 'Mechanical');
+
+INSERT INTO
+  students (rollno, name, bdate, deptcode, hostel, parent_inc)
+VALUES
+  (
+    92005501,
+    'Kunal Joshi',
+    '1996-03-15',
+    'MEC',
+    2,
+    520000.0
+  ),
+  (
+    92005502,
+    'Rajat Banerjee',
+    '1995-11-22',
+    'MEC',
+    4,
+    610000.0
+  ),
+  (
+    92005503,
+    'Priyanka Desai',
+    '1996-01-10',
+    'MEC',
+    7,
+    480000.0
+  );

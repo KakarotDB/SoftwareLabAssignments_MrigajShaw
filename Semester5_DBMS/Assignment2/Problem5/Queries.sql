@@ -63,12 +63,13 @@ GROUP BY
   deptcode
 HAVING
   COUNT(DISTINCT TRIM(faculty.fac_dept)) = 1
-  AND MAX(TRIM(faculty.fac_dept)) = TRIM(students.deptcode)
-  AND COUNT(DISTINCT TRIM(faculty.fac_code)) = (
-    SELECT
-      COUNT(DISTINCT TRIM(faculty.fac_code))
-    FROM
-      faculty
-    WHERE
-      TRIM(fac_dept) = TRIM(deptcode)
-  );
+  AND MAX(TRIM(faculty.fac_dept)) = TRIM(students.deptcode);
+
+--  AND COUNT(DISTINCT TRIM(faculty.fac_code)) = (
+--    SELECT
+--      COUNT(DISTINCT TRIM(faculty.fac_code))
+--    FROM
+--      faculty
+--    WHERE
+--      TRIM(fac_dept) = TRIM(deptcode)
+--  );
