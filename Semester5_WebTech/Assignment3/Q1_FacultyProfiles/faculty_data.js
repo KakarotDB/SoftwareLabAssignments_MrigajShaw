@@ -13,10 +13,10 @@ const facultyData = [
         imageFile: "images/abhik_mukherjee.jpg"
     },
     {
-        id: "amit_kumar_das",
-        name: "Dr. Amit Kumar Das",
+        id: "asit_kumar_das",
+        name: "Dr. Asit Kumar Das",
         title: "Dr.",
-        firstName: "Amit Kumar",
+        firstName: "Asit Kumar",
         lastName: "Das",
         email: "amit@cs.iiests.ac.in",
         qualification: ["Ph.D. Computer Science"],
@@ -169,19 +169,6 @@ const facultyData = [
         imageFile: "images/sipra_das_bit.jpg"
     },
     {
-        id: "somnath_pal",
-        name: "Dr. Somnath Pal",
-        title: "Dr.",
-        firstName: "Somnath",
-        lastName: "Pal",
-        email: "sp@cs.iiests.ac.in",
-        qualification: ["Ph.D. Computer Science"],
-        research: ["Symbolic Logic", "Artificial Intelligence", "Brain & Behavioral Sciences", "Nature Inspired Algorithms"],
-        subjects: ["Artificial Intelligence", "Logic Programming", "Nature Inspired Computing"],
-        designation: "Associate Professor",
-        imageFile: "images/somnath_pal.jpg"
-    },
-    {
         id: "sulata_mitra",
         name: "Dr. Sulata Mitra",
         title: "Dr.",
@@ -206,19 +193,6 @@ const facultyData = [
         subjects: ["Computer Organization", "VLSI Design", "High Performance Computing"],
         designation: "Assistant Professor",
         imageFile: "images/surajeet_ghosh.jpg"
-    },
-    {
-        id: "susanta_chakraborty",
-        name: "Dr. Susanta Chakraborty",
-        title: "Dr.",
-        firstName: "Susanta",
-        lastName: "Chakraborty",
-        email: "sc@cs.iiests.ac.in",
-        qualification: ["Ph.D. Computer Science"],
-        research: ["Social Network Analysis", "Machine Learning", "Data Mining", "IoT Security", "Intelligent System Design", "Quantum Computing", "Image Processing"],
-        subjects: ["Social Networks", "Machine Learning", "Database Management"],
-        designation: "Professor",
-        imageFile: "images/susanta_chakraborty.jpg"
     },
     {
         id: "tamal_pal",
