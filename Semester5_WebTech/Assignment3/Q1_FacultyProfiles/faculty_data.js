@@ -1,13 +1,3 @@
-/**
- * faculty_data.js
- * 
- * VIVA-READY EXPLANATION: How JSON data storage works in JavaScript
- * JSON (JavaScript Object Notation) is a lightweight format for storing and transporting data.
- * While this is technically an array of JavaScript objects, it follows JSON-like structure.
- * Storing data this way mimics a real-world scenario where a frontend receives JSON from a REST API.
- * It allows us to easily iterate over the data using methods like .map(), .filter(), and .find().
- */
-
 const facultyData = [
     {
         id: "abhik_mukherjee",
