@@ -1,0 +1,272 @@
+/* 
+ * style.css
+ * 
+ * Main stylesheet for the Faculty Information Profile System.
+ */
+
+/* Basic Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* Header & Branding */
+header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px var(--shadow-color);
+}
+
+.brand {
+    display: flex;
+    flex-direction: column;
+}
+
+.brand h1 {
+    font-size: 1.8rem;
+    margin-bottom: 0.2rem;
+}
+
+.brand p {
+    font-size: 0.9rem;
+    color: var(--secondary-color);
+}
+
+/* Theme Switcher */
+.theme-switcher select {
+    padding: 0.5rem;
+    border-radius: 4px;
+    border: none;
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* Container */
+.container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+/* Search Section (index.html) */
+.search-container {
+    background-color: var(--card-bg);
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px var(--shadow-color);
+    text-align: center;
+    margin-bottom: 2rem;
+    border: 1px solid var(--border-color);
+}
+
+.search-container h2 {
+    margin-bottom: 1.5rem;
+    color: var(--primary-color);
+}
+
+.search-box {
+    display: flex;
+    flex-direction: column;
+    max-width: 500px;
+    margin: 0 auto;
+    gap: 1rem;
+}
+
+.search-box input, .search-box select {
+    padding: 0.8rem;
+    font-size: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+.btn {
+    padding: 0.8rem 1.5rem;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+/* Profile Display (profile.html) */
+.controls {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+}
+
+.profile-card {
+    display: flex;
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 20px var(--shadow-color);
+    border: 1px solid var(--border-color);
+}
+
+.profile-photo {
+    flex: 0 0 300px;
+    background-color: var(--secondary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid var(--border-color);
+}
+
+.profile-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.photo-placeholder {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    font-weight: bold;
+}
+
+.profile-details {
+    flex: 1;
+    padding: 2rem;
+}
+
+.profile-header {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--accent-color);
+}
+
+.profile-header h2 {
+    font-size: 2.2rem;
+    color: var(--primary-color);
+    margin-bottom: 0.2rem;
+}
+
+.designation {
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    font-weight: bold;
+}
+
+.contact-info {
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+}
+
+.section-title {
+    font-size: 1.3rem;
+    color: var(--primary-color);
+    margin: 1.5rem 0 0.8rem;
+}
+
+/* Lists and Tags */
+.qualifications {
+    list-style-position: inside;
+    margin-bottom: 1rem;
+}
+
+.qualifications li {
+    margin-bottom: 0.5rem;
+}
+
+.tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.tag-pill {
+    background-color: var(--pill-bg);
+    color: var(--pill-text);
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.tag-badge {
+    background-color: var(--badge-bg);
+    color: var(--badge-text);
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .profile-card {
+        flex-direction: column;
+    }
+    
+    .profile-photo {
+        flex: 0 0 250px;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+    }
+}
+
+/* 
+ * VIVA-READY EXPLANATION: What @media print does
+ * @media print is a CSS media query that applies styles only when the user is printing the document
+ * or saving it as a PDF. We use it here to remove unnecessary UI elements (like buttons, headers, theme switchers)
+ * and reformat the page layout so it looks like a clean, physical document. It changes colors to black and white
+ * to save printer ink and ensures backgrounds print correctly.
+ */
+@media print {
+    body {
+        background-color: white;
+        color: black;
+    }
+    
+    header, .controls, .theme-switcher {
+        display: none !important;
+    }
+    
+    .profile-card {
+        box-shadow: none;
+        border: 2px solid #ccc;
+    }
+    
+    .profile-header h2, .section-title {
+        color: black !important;
+    }
+    
+    .tag-badge, .tag-pill {
+        border: 1px solid #333;
+        color: black !important;
+        background-color: white !important;
+    }
+}

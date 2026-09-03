@@ -1,0 +1,70 @@
+/* 
+ * themes.css
+ * 
+ * VIVA-READY EXPLANATION: How CSS custom properties (variables) enable theming
+ * CSS custom properties (defined with --) allow us to store values that can be reused throughout the stylesheet.
+ * By placing these variables in the :root pseudo-class, they are globally accessible.
+ * To implement theming, we override these variables for specific classes (like .dark-theme or .blue-theme)
+ * applied to the <body> tag. Any element using var(--variable-name) will automatically update
+ * its color without writing separate CSS rules for every element.
+ */
+
+/* Default Light Theme (IIEST Colors) */
+:root {
+    --primary-color: #8B0000; /* IIEST Crimson/Maroon */
+    --secondary-color: #F5F0E8; /* Cream */
+    --accent-color: #FFD700; /* Gold/Yellow */
+    
+    --bg-color: #ffffff;
+    --text-color: #333333;
+    --text-muted: #666666;
+    --card-bg: #f9f9f9;
+    --border-color: #dddddd;
+    
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    
+    --pill-bg: #e0e0e0;
+    --pill-text: #333333;
+    --badge-bg: #8B0000;
+    --badge-text: #ffffff;
+}
+
+/* Dark Theme */
+body.dark-theme {
+    --primary-color: #a81c1c; /* Lighter crimson for dark mode */
+    --secondary-color: #1a1a1a;
+    --accent-color: #FFD700;
+    
+    --bg-color: #121212;
+    --text-color: #e0e0e0;
+    --text-muted: #aaaaaa;
+    --card-bg: #1e1e1e;
+    --border-color: #333333;
+    
+    --shadow-color: rgba(255, 255, 255, 0.05);
+    
+    --pill-bg: #333333;
+    --pill-text: #e0e0e0;
+    --badge-bg: #a81c1c;
+    --badge-text: #ffffff;
+}
+
+/* Blue Academic Theme */
+body.blue-theme {
+    --primary-color: #003366; /* Deep Academic Blue */
+    --secondary-color: #f0f4f8;
+    --accent-color: #ff9900;
+    
+    --bg-color: #e6eef5;
+    --text-color: #1a2b3c;
+    --text-muted: #4a5c6d;
+    --card-bg: #ffffff;
+    --border-color: #c0d1e1;
+    
+    --shadow-color: rgba(0, 51, 102, 0.1);
+    
+    --pill-bg: #d0e1f2;
+    --pill-text: #003366;
+    --badge-bg: #003366;
+    --badge-text: #ffffff;
+}

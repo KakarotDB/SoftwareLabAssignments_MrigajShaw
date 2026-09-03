@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty Profile</title>
+    <link rel="stylesheet" href="themes.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <div class="brand">
+            <h1>IIEST Shibpur</h1>
+            <p>Department of Computer Science and Technology</p>
+        </div>
+        <div class="theme-switcher">
+            <label for="themeSelect">Theme:</label>
+            <select id="themeSelect" onchange="changeTheme(this.value)">
+                <option value="light">Light</option>
+                <option value="dark">Dark Mode</option>
+                <option value="blue">Blue Academic</option>
+            </select>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="controls">
+            <button class="btn" onclick="window.location.href='index.html'">← Back to List</button>
+            <button class="btn" onclick="window.print()">🖨️ Print Profile</button>
+        </div>
+
+        <div id="profileContainer" class="profile-card">
+            <!-- Content will be injected here by JS -->
+        </div>
+    </div>
+
+    <script src="faculty_data.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            loadTheme();
+            loadProfile();
+        });
+
+        function loadProfile() {
+            // Retrieve the faculty name stored by index.html
+            const facultyName = localStorage.getItem('selectedFacultyName');
+            
+            if (!facultyName) {
+                document.getElementById('profileContainer').innerHTML = `
+                    <div style="padding: 3rem; text-align: center; width: 100%;">
+                        <h2>No faculty selected.</h2>
+                        <p>Please go back to the directory and select a faculty member.</p>
+                    </div>`;
+                return;
+            }
+
+            // Look up the faculty data using the helper function
+            const faculty = getFacultyByName(facultyName);
+
+            if (faculty) {
+                renderProfile(faculty);
+                document.title = `${faculty.name} - Profile`;
+            } else {
+                document.getElementById('profileContainer').innerHTML = `<p style="padding:2rem;">Faculty not found.</p>`;
+            }
+        }
+
+        function renderProfile(faculty) {
+            const container = document.getElementById('profileContainer');
+            
+            // Build Qualifications HTML
+            const qualsHTML = faculty.qualification.map(q => `<li>${q}</li>`).join('');
+            
+            // Build Subjects HTML (Pills)
+            const subjectsHTML = faculty.subjects.map(s => `<span class="tag-pill">${s}</span>`).join('');
+            
+            // Build Research HTML (Badges)
+            const researchHTML = faculty.research.map(r => `<span class="tag-badge">${r}</span>`).join('');
+
+            // Get Initials for Placeholder
+            const initials = faculty.firstName.charAt(0) + faculty.lastName.charAt(0);
+
+            container.innerHTML = `
+                <div class="profile-photo">
+                    <img src="${faculty.imageFile}" alt="${faculty.name}" onerror="this.outerHTML='<div class=\\'photo-placeholder\\'>${initials}</div>'">
+                </div>
+                <div class="profile-details">
+                    <div class="profile-header">
+                        <h2>${faculty.name}</h2>
+                        <div class="designation">${faculty.designation}</div>
+                    </div>
+                    
+                    <div class="contact-info">
+                        <strong>📧 Email:</strong> <a href="mailto:${faculty.email}" style="color:var(--primary-color);">${faculty.email}</a>
+                    </div>
+                    
+                    <h3 class="section-title">🎓 Qualifications</h3>
+                    <ul class="qualifications">
+                        ${qualsHTML}
+                    </ul>
+                    
+                    <h3 class="section-title">🔬 Research Areas</h3>
+                    <div class="tags-container" style="margin-bottom: 1.5rem;">
+                        ${researchHTML}
+                    </div>
+                    
+                    <h3 class="section-title">📚 Subjects Taught</h3>
+                    <div class="tags-container">
+                        ${subjectsHTML}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Theme Management (Keep consistent across pages)
+        function changeTheme(theme) {
+            document.body.className = theme === 'light' ? '' : theme + '-theme';
+            localStorage.setItem('preferredTheme', theme);
+        }
+
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('preferredTheme') || 'light';
+            document.getElementById('themeSelect').value = savedTheme;
+            changeTheme(savedTheme);
+        }
+    </script>
+</body>
+</html>

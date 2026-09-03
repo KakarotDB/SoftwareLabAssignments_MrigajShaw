@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignment 2: document.write() Portfolio</title>
+    <!--
+      VIVA POINT: External JS means the script tag in HTML has a 'src' attribute pointing to a .js file.
+      The .js file is NOT embedded inside HTML - it is a separate file.
+    -->
+</head>
+<body>
+    <!--
+      VIVA POINT: In this assignment, the script in index.html runs during the initial parsing of the HTML document.
+      Therefore, document.write() INSERTS the content at the current position in the document stream.
+      If document.write() were called after the page had fully loaded, it would REPLACE the entire document content.
+    -->
+    <script src="page_writer.js"></script>
+    <script src="print_helper.js"></script>
+</body>
+</html>

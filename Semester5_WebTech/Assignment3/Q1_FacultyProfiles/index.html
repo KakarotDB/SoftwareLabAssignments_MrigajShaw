@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IIEST CST - Faculty Directory</title>
+    <link rel="stylesheet" href="themes.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <div class="brand">
+            <h1>IIEST Shibpur</h1>
+            <p>Department of Computer Science and Technology</p>
+        </div>
+        <div class="theme-switcher">
+            <label for="themeSelect">Theme:</label>
+            <select id="themeSelect" onchange="changeTheme(this.value)">
+                <option value="light">Light (Default)</option>
+                <option value="dark">Dark Mode</option>
+                <option value="blue">Blue Academic</option>
+            </select>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="search-container">
+            <h2>Faculty Information Profile System</h2>
+            
+            <div class="search-box">
+                <!-- Dropdown list populated by JS -->
+                <select id="facultySelect">
+                    <option value="">-- Select a Faculty Member --</option>
+                </select>
+                
+                <!-- Or text search -->
+                <input type="text" id="searchInput" placeholder="Or type a name (e.g. Abhik Mukherjee)" onkeyup="filterDropdown()">
+                
+                <button class="btn" onclick="viewProfile()">View Profile</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Script -->
+    <script src="faculty_data.js"></script>
+    
+    <script>
+        // VIVA-READY EXPLANATION: How the search/filter algorithm works
+        // The script loops over the facultyData array and creates an <option> for each member.
+        // When the user types in the search input (onkeyup), the filterDropdown() function is called.
+        // It reads the typed text, converts it to lowercase, and checks if any option's text includes it.
+        // It then updates the select dropdown's value if a match is found.
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadTheme(); // Load saved theme
+            populateDropdown();
+        });
+
+        function populateDropdown() {
+            const select = document.getElementById('facultySelect');
+            facultyData.forEach(faculty => {
+                const option = document.createElement('option');
+                option.value = faculty.name;
+                option.textContent = faculty.name;
+                select.appendChild(option);
+            });
+        }
+
+        function filterDropdown() {
+            const filter = document.getElementById('searchInput').value.toLowerCase();
+            const select = document.getElementById('facultySelect');
+            const options = select.options;
+            
+            // Auto-select if input matches
+            for (let i = 1; i < options.length; i++) {
+                const txtValue = options[i].textContent || options[i].innerText;
+                if (txtValue.toLowerCase().indexOf(filter) > -1 && filter.length > 2) {
+                    select.selectedIndex = i;
+                    break;
+                }
+            }
+        }
+
+        // VIVA-READY EXPLANATION: What localStorage is and why used for inter-page communication
+        // localStorage is a Web Storage API that allows JavaScript sites and apps to store key-value 
+        // pairs in a web browser with no expiration date. The data persists even after the browser window is closed.
+        // We use it here instead of URL parameters (though both work) because it's clean, doesn't clutter the URL,
+        // and provides an easy way to pass state (the selected faculty name) from index.html to profile.html.
+        function viewProfile() {
+            const selectedFaculty = document.getElementById('facultySelect').value;
+            if (selectedFaculty) {
+                // Save selection to localStorage
+                localStorage.setItem('selectedFacultyName', selectedFaculty);
+                // Navigate to profile page
+                window.location.href = 'profile.html';
+            } else {
+                alert('Please select a faculty member first.');
+            }
+        }
+
+        // Theme Management
+        function changeTheme(theme) {
+            document.body.className = theme === 'light' ? '' : theme + '-theme';
+            localStorage.setItem('preferredTheme', theme);
+        }
+
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('preferredTheme') || 'light';
+            document.getElementById('themeSelect').value = savedTheme;
+            changeTheme(savedTheme);
+        }
+    </script>
+</body>
+</html>

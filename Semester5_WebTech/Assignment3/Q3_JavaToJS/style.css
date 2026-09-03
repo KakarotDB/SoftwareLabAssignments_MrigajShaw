@@ -1,0 +1,195 @@
+/* Navy Blue and Gold Theme */
+:root {
+    --navy-blue: #003366;
+    --navy-light: #004b99;
+    --gold: #FFD700;
+    --gold-dark: #ccac00;
+    --white: #ffffff;
+    --gray-bg: #f4f7f6;
+    --text-dark: #333333;
+    --text-light: #666666;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: var(--gray-bg);
+    color: var(--text-dark);
+}
+
+header {
+    background-color: var(--navy-blue);
+    color: var(--white);
+    padding: 2rem 0;
+    text-align: center;
+    border-bottom: 5px solid var(--gold);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+header h1 {
+    margin-bottom: 0.5rem;
+    color: var(--gold);
+}
+
+.container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+/* Card Styling */
+.card {
+    background: var(--white);
+    border-radius: 8px;
+    padding: 2rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    margin-bottom: 2rem;
+    border-top: 4px solid var(--navy-blue);
+}
+
+.card h2, .card h3 {
+    color: var(--navy-blue);
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid var(--gray-bg);
+    padding-bottom: 0.5rem;
+}
+
+/* Form Elements */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--navy-blue);
+}
+
+.form-group input, .form-group select {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+}
+
+.form-group input:focus, .form-group select:focus {
+    outline: none;
+    border-color: var(--gold);
+    box-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
+}
+
+/* Buttons */
+button {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: var(--navy-blue);
+    color: var(--white);
+    width: 100%;
+}
+
+.btn-primary:hover {
+    background-color: var(--navy-light);
+    transform: translateY(-2px);
+}
+
+.btn-group {
+    display: flex;
+    gap: 1rem;
+}
+
+.btn-success {
+    background-color: #28a745;
+    color: white;
+    flex: 1;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+    flex: 1;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+}
+
+/* Account Info Grid */
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    background-color: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 6px;
+    border-left: 4px solid var(--gold);
+    margin-bottom: 2rem;
+}
+
+.balance-display {
+    font-size: 1.2rem;
+    color: var(--navy-blue);
+}
+
+.animated-bal {
+    color: #28a745;
+    font-weight: bold;
+    font-size: 1.4rem;
+    transition: all 0.3s ease;
+}
+
+/* Table Styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+th, td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: var(--navy-blue);
+    color: var(--white);
+    font-weight: 600;
+}
+
+tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+    .btn-group {
+        flex-direction: column;
+    }
+}

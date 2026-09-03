@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Grade & SGPA Calculator - IIEST Shibpur</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="main-header">
+        <h1>Student Grade & SGPA Calculator</h1>
+        <h2>IIEST Shibpur</h2>
+    </header>
+
+    <main class="container">
+        <!-- Input Section -->
+        <section class="card input-section no-print">
+            <h3>Student Information</h3>
+            <div class="student-info-grid">
+                <div class="form-group">
+                    <label for="studentName">Name</label>
+                    <input type="text" id="studentName" placeholder="Enter full name">
+                </div>
+                <div class="form-group">
+                    <label for="rollNumber">Roll Number</label>
+                    <input type="text" id="rollNumber" placeholder="e.g. 510523001">
+                </div>
+                <div class="form-group">
+                    <label for="semester">Semester</label>
+                    <input type="number" id="semester" min="1" max="8" placeholder="1-8">
+                </div>
+            </div>
+
+            <h3>Subject Details</h3>
+            <div id="subjectsContainer">
+                <!-- 5 Subjects rows will be generated dynamically by JS -->
+            </div>
+            
+            <div class="action-buttons">
+                <button id="calculateBtn" class="btn btn-primary">Calculate SGPA</button>
+                <button id="resetBtn" class="btn btn-secondary">Reset</button>
+            </div>
+            <div id="error-message" class="error-text"></div>
+        </section>
+
+        <!-- Result Section -->
+        <section id="resultSection" class="card result-section hidden">
+            <h3 class="result-title">Calculation Results</h3>
+            <div id="resultStatus" class="result-status"></div>
+            
+            <div class="sgpa-display">
+                <div class="sgpa-circle">
+                    <span id="sgpaValue">0.00</span>
+                </div>
+                <div class="overall-status" id="overallStatus"></div>
+            </div>
+            
+            <div class="table-responsive">
+                <table id="resultTable">
+                    <thead>
+                        <tr>
+                            <th>Subject</th>
+                            <th>Credits</th>
+                            <th>Marks</th>
+                            <th>Percentage</th>
+                            <th>Grade</th>
+                            <th>Grade Point</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultTableBody">
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="summary-stats">
+                <p><strong>Total Marks:</strong> <span id="totalMarksDisplay"></span></p>
+                <p><strong>Total Percentage:</strong> <span id="totalPercentageDisplay"></span>%</p>
+            </div>
+
+            <div class="action-buttons no-print">
+                <button id="printBtn" class="btn btn-primary">Print Result</button>
+                <button id="exportBtn" class="btn btn-secondary">Export Text</button>
+            </div>
+        </section>
+    </main>
+
+    <script src="calculator.js"></script>
+</body>
+</html>
