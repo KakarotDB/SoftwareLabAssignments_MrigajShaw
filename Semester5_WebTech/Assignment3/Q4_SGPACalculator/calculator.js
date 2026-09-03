@@ -1,8 +1,3 @@
-/**
- * Student Grade & SGPA Calculator
- * This script contains the logic for calculating SGPA, validating inputs,
- * manipulating the DOM, and storing data using localStorage.
- */
 
 // Grading System Constants (10-point scale typically used in Indian Universities like IIEST)
 const GRADE_SCALE = [
