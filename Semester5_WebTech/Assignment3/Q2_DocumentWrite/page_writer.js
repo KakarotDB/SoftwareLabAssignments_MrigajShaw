@@ -1,15 +1,3 @@
-/**
- * Assignment 2 - HTML page written entirely using document.write() in external JavaScript.
- * 
- * VIVA POINTS:
- * - document.write() is a method of the Document interface.
- * - It writes a string of text to a document stream opened by document.open().
- * - When called during initial page parsing (like here), it INSERTS content at the current script position.
- * - When called after the page is fully loaded, it REPLACES the entire document.
- */
-
-// We are writing the entire HTML structure inside document.write().
-// Note: We use template literals (\`\`) or string concatenation to manage multiline strings in JS.
 
 document.write(`
     <style>
