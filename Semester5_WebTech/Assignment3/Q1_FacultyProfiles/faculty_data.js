@@ -18,7 +18,7 @@ const facultyData = [
         title: "Dr.",
         firstName: "Asit Kumar",
         lastName: "Das",
-        email: "amit@cs.iiests.ac.in",
+        email: "asit@cs.iiests.ac.in",
         qualification: ["Ph.D. Computer Science"],
         research: ["Document Image Processing", "Image Segmentation", "Pattern Recognition"],
         subjects: ["Digital Image Processing", "Pattern Recognition", "Computer Vision"],
