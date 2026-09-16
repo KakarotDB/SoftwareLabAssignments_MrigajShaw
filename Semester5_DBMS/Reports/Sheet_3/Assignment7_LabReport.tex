@@ -1,0 +1,114 @@
+\documentclass[11pt, a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tabularx}
+
+% Configure SQL code block styling
+\lstset{
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue}\bfseries,
+    stringstyle=\color{red!70!black},
+    commentstyle=\color{green!60!black}\itshape,
+    frame=single,
+    backgroundcolor=\color{gray!5},
+    breaklines=true,
+    showstringspaces=false
+}
+
+\title{Sheet 3}
+\author{Mrigaj Shaw}
+\date{2024CSB041}
+
+\begin{document}
+
+\maketitle
+
+\section{Assignment 7: Views and Data Manipulation}
+
+\subsection*{Create a view of all students in dept CSE.}
+\begin{lstlisting}[language=SQL]
+CREATE VIEW cse_all_stud AS
+SELECT * 
+FROM students 
+WHERE TRIM(deptcode) = 'CSE';
+\end{lstlisting}
+\vspace{0.3cm}
+
+\subsection*{Create a view named as cse\_stud for `CSE' dept students having attributes rollno, name, hostel}
+\begin{lstlisting}[language=SQL]
+CREATE VIEW cse_stud AS
+SELECT rollno, name, hostel 
+FROM students 
+WHERE TRIM(deptcode) = 'CSE';
+\end{lstlisting}
+\vspace{0.3cm}
+
+\subsection*{Insert a new student of CSE. Analyse the result.}
+\begin{lstlisting}[language=SQL]
+INSERT INTO cse_stud (rollno, name, hostel) 
+VALUES ('1001', 'John Doe', 'Hostel A');
+\end{lstlisting}
+\vspace{0.2cm}
+\textbf{Observation:} If the base \texttt{students} table lacks \texttt{NOT NULL} constraints on unlisted columns (like \texttt{deptcode} or \texttt{bdate}), this insertion will execute successfully. However, because the view does not explicitly set the \texttt{deptcode} to 'CSE' upon insertion, the new row is inserted into the base table with a \texttt{NULL} department. As a result, the newly inserted student will \textbf{not} appear when querying the \texttt{cse\_stud} view, demonstrating the risk of inserting through views that omit filtering columns.
+\vspace{0.3cm}
+
+\subsection*{Increment parental income by Rs. 5000 (HRA).}
+\begin{lstlisting}[language=SQL]
+UPDATE students 
+SET parent_inc = parent_inc + 5000;
+\end{lstlisting}
+\vspace{0.3cm}
+
+\subsection*{Delete the view.}
+\begin{lstlisting}[language=SQL]
+DROP VIEW cse_stud;
+DROP VIEW cse_all_stud;
+\end{lstlisting}
+\vspace{0.3cm}
+
+\subsection*{Create another view of all students in dept Mechanical Engineering.}
+\textit{Requirement: The view will contain attributes namely Roll-No, Name, Department Name, Age.}
+\begin{lstlisting}[language=SQL]
+CREATE VIEW mech_engineers AS
+SELECT 
+  rollno AS "Roll-No", 
+  name AS "Name", 
+  deptcode AS "Department Name", 
+  AGE(CURRENT_DATE, bdate) AS "Age" 
+FROM students 
+WHERE TRIM(deptcode) = 'MEC';
+\end{lstlisting}
+\vspace{0.3cm}
+
+\subsection*{Attempt the following: Insert a new student of Mechanical Engineering Department.}
+\begin{lstlisting}[language=SQL]
+INSERT INTO mech_engineers ("Roll-No", "Name", "Department Name", "Age") 
+VALUES ('2002', 'Jane Smith', 'MEC', '20 years');
+\end{lstlisting}
+\vspace{0.2cm}
+\textbf{Observation:} This insertion attempt will \textbf{fail}. PostgreSQL views containing derived or calculated columns (such as the \texttt{AGE()} function) are not automatically updatable. The database engine cannot reverse-engineer a date of birth (\texttt{bdate}) from an inserted interval ("20 years"). Insertions must be performed directly on the base \texttt{students} table.
+\vspace{0.3cm}
+
+\subsection*{Delete a student (for a given Name) of the same department}
+\begin{lstlisting}[language=SQL]
+DELETE FROM mech_engineers 
+WHERE "Name" = 'Tamanna Jana';
+\end{lstlisting}
+\vspace{0.2cm}
+\textbf{Observation:} While some views are updatable, complex views might reject deletions without an \texttt{INSTEAD OF} trigger. If executed successfully, deleting from the view removes the underlying row directly from the base \texttt{students} table. This proves that views are merely virtual windows into the base table, and data destruction cascades down to the root records.
+\vspace{0.3cm}
+
+\subsection*{Shift a student (for a given Name) from Mechanical to Computer Science.}
+\begin{lstlisting}[language=SQL]
+-- Shifting the student by updating the base table directly
+UPDATE students 
+SET deptcode = 'CSE' 
+WHERE name = 'Riddhi Agarwal' AND TRIM(deptcode) = 'MEC';
+\end{lstlisting}
+\vspace{0.2cm}
+\textbf{Observation:} Changing the \texttt{deptcode} on the base table dynamically updates the views. As soon as the student's department changes to 'CSE', they automatically disappear from the \texttt{mech\_engineers} view (since they no longer meet the \texttt{WHERE} condition) and would immediately populate in any active 'CSE' views. This perfectly illustrates the dynamic, real-time filtering nature of SQL views.
+\vspace{0.3cm}
+
+\end{document}
