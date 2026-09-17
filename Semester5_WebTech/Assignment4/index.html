@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignment 4 - PHP & AJAX</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Assignment 4: Client-Server AJAX Communication</h1>
+
+        <section class="card">
+            <h2>1. Hello PHP</h2>
+            <button onclick="fetchHello()">Say Hello</button>
+            <div id="q1-output" class="output"></div>
+        </section>
+
+        <section class="card">
+            <h2>2. Calculate Student Grade</h2>
+            <input type="number" id="q2-marks" placeholder="Enter marks (0-100)">
+            <button onclick="fetchGrade()">Calculate Grade</button>
+            <div id="q2-output" class="output"></div>
+        </section>
+
+        <section class="card">
+            <h2>3. Display Odd Numbers (1 to N)</h2>
+            <input type="number" id="q3-n" placeholder="Enter N">
+            <button onclick="fetchOddNumbers()">Get Odds</button>
+            <div id="q3-output" class="output"></div>
+        </section>
+
+        <section class="card">
+            <h2>4i. Sort N Numbers</h2>
+            <input type="text" id="q4i-numbers" placeholder="Comma-separated numbers (e.g. 45, 12, 89, 3)">
+            <button onclick="fetchSortedNumbers()">Sort</button>
+            <div id="q4i-output" class="output"></div>
+        </section>
+
+        <section class="card">
+            <h2>4ii. Display N Animal Names</h2>
+            <input type="number" id="q4ii-n" placeholder="Enter N">
+            <button onclick="fetchAnimalNames()">Get Names</button>
+            <div id="q4ii-output" class="output"></div>
+        </section>
+
+        <section class="card">
+            <h2>5. Form Feedback</h2>
+            <form id="feedback-form" enctype="multipart/form-data">
+                <p><label>Textbox: <input type="text" name="username" required></label></p>
+                <p><label>Password: <input type="password" name="password" required></label></p>
+                <p>
+                    Option Buttons:
+                    <label><input type="radio" name="gender" value="Male"> Male</label>
+                    <label><input type="radio" name="gender" value="Female"> Female</label>
+                </p>
+                <p>
+                    List box:
+                    <select name="country">
+                        <option value="India">India</option>
+                        <option value="USA">USA</option>
+                        <option value="UK">UK</option>
+                    </select>
+                </p>
+                <p><label>File upload: <input type="file" name="user_file"></label></p>
+                <input type="hidden" name="hidden_token" value="SECURE_TOKEN_12345">
+                <button type="submit">Submit Form via AJAX</button>
+            </form>
+            <div id="q5-output" class="output"></div>
+        </section>
+
+        <section class="card">
+            <h2>6. Display N Animal Images</h2>
+            <input type="number" id="q6-n" placeholder="Enter N (1-6)">
+            <button onclick="fetchAnimalImages()">Show Images</button>
+            <div id="q6-output" class="gallery"></div>
+        </section>
+
+        <section class="card">
+            <h2>7. Database Connection via AJAX</h2>
+            <button onclick="fetchDatabaseData()">Fetch Students from Database</button>
+            <div id="q7-output" class="output"></div>
+        </section>
+
+        <section class="card">
+            <h2>8. Subject-Wise Marks & Average Grade</h2>
+            <input type="number" id="q8-math" placeholder="Maths">
+            <input type="number" id="q8-physics" placeholder="Physics">
+            <input type="number" id="q8-cs" placeholder="Computer Science">
+            <button onclick="fetchSubjectMarks()">Calculate Result</button>
+            <div id="q8-output" class="output"></div>
+        </section>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
