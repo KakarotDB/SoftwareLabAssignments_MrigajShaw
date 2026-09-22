@@ -1,0 +1,564 @@
+\documentclass[11pt, a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tabularx}
+
+% Configure SQL code block styling
+\lstset{
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue}\bfseries,
+    stringstyle=\color{red!70!black},
+    commentstyle=\color{green!60!black}\itshape,
+    frame=single,
+    backgroundcolor=\color{gray!5},
+    breaklines=true,
+    showstringspaces=false
+}
+
+\title{Assignment4 Lab Report}
+\author{Student Name}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Problem8}
+
+\subsection*{Schema Creation}
+\textbf{Schema Requirements:}
+\begin{itemize}
+    \item Customer (\underline{cust\_id}, cust\_name, annual\_revenue, cust\_type) \\
+    \textit{Cust\_id must be between 100 and 10,000. Cust\_type must be `MANUFACTURER', `WHOLESALER', or `RETAILER'.}
+    \item Shipment (\underline{shipment\_no}, cust\_id, weight, truck\_no, destination, ship\_date) \\
+    \textit{Foreign keys: cust\_id references customer on delete cascade, truck\_no references truck on delete set null, destination references city. Weight must be under 1000.}
+    \item Truck (\underline{truck\_no}, driver\_name)
+    \item City (\underline{city\_name}, population)
+\end{itemize}
+
+\begin{lstlisting}[language=SQL]
+-- DDL Schema Creation
+CREATE TABLE IF NOT EXISTS Customer (
+  cust_id INTEGER PRIMARY KEY CHECK (
+    cust_id >= 100
+    AND cust_id <= 10000
+  ),
+  cust_name VARCHAR(30),
+  annual_revenue NUMERIC(10, 2),
+  cust_type VARCHAR(30) CHECK (
+    cust_type IN ('MANUFACTURER', 'WHOLESALER', 'RETAILER')
+  )
+);
+
+CREATE TABLE IF NOT EXISTS Truck (
+  truck_no INTEGER PRIMARY KEY,
+  driver_name VARCHAR(30)
+);
+
+CREATE TABLE IF NOT EXISTS City (
+  city_name VARCHAR(30) PRIMARY KEY,
+  population INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS Shipment (
+  shipment_no INTEGER PRIMARY KEY,
+  cust_id INTEGER REFERENCES Customer (cust_id) ON DELETE CASCADE,
+  weight INTEGER CHECK (weight < 1000),
+  truck_no INTEGER REFERENCES Truck (truck_no) ON DELETE SET NULL,
+  destination VARCHAR(30) REFERENCES City (city_name)
+);
+\end{lstlisting}
+\newpage
+
+\subsection*{Q1: Give names of customer who have sent packages (shipments) to Kolkata, Chennai and Mumbai.}
+\begin{lstlisting}[language=SQL]
+SELECT
+  cust_name
+FROM
+  customer
+  JOIN shipment ON customer.cust_id = shipment.cust_id
+WHERE
+  destination in ('Kolkata', 'Chennai', 'Mumbai');
+\end{lstlisting}
+\vspace{0.3cm}
+\textbf{Output:}\vspace{0.2cm}
+\begin{center}
+\begin{tabular}{|l|}
+\hline
+\textbf{cust\_name} \\ \hline
+Acme Corp \\ \hline
+Acme Corp \\ \hline
+Acme Corp \\ \hline
+Echo Supplies \\ \hline
+Echo Supplies \\ \hline
+Echo Supplies \\ \hline
+Halo Tech \\ \hline
+\end{tabular}
+\end{center}
+\newpage
+\subsection*{Q2: List the names of the driver who have delivered shipments weighing over 200 pounds.}
+\begin{lstlisting}[language=SQL]
+SELECT
+  driver_name,
+  weight
+FROM
+  truck
+  JOIN shipment on truck.truck_no = shipment.truck_no
+WHERE
+  shipment.weight > 200;
+\end{lstlisting}
+\vspace{0.3cm}
+\textbf{Output:}\vspace{0.2cm}
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{driver\_name} & \textbf{weight} \\ \hline
+IQBAL & 300 \\ \hline
+MANISH & 210 \\ \hline
+DEV & 500 \\ \hline
+RAJ & 250 \\ \hline
+AMIT & 300 \\ \hline
+IQBAL & 999 \\ \hline
+IQBAL & 750 \\ \hline
+\end{tabular}
+\end{center}
+\newpage
+\subsection*{Q3: Retrieve the maximum and minimum weights of the shipments. Rename the output as Max\_Weight and Min\_Weight respectively.}
+\begin{lstlisting}[language=SQL]
+SELECT
+  MAX(weight) as Max_Weight,
+  MIN(weight) as Min_Weight
+FROM
+  shipment;
+\end{lstlisting}
+\vspace{0.3cm}
+\textbf{Output:}\vspace{0.2cm}
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{max\_weight} & \textbf{min\_weight} \\ \hline
+999 & 10 \\ \hline
+\end{tabular}
+\end{center}
+\newpage
+\subsection*{Q4: For each customer, what is the average weight of package sent by the customer?}
+\begin{lstlisting}[language=SQL]
+SELECT
+  cust_name,
+  ROUND(AVG(weight), 2)
+FROM
+  customer
+  JOIN shipment on customer.cust_id = shipment.cust_id
+GROUP BY
+  customer.cust_id
+ORDER BY
+  AVG(weight) DESC;
+\end{lstlisting}
+\vspace{0.3cm}
+\textbf{Output:}\vspace{0.2cm}
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{cust\_name} & \textbf{round} \\ \hline
+Jupiter Mills & 625.00 \\ \hline
+Gamma Traders & 544.50 \\ \hline
+Indus Retail & 210.00 \\ \hline
+Beta Goods & 200.00 \\ \hline
+Echo Supplies & 180.00 \\ \hline
+Acme Corp & 150.00 \\ \hline
+Delta Dynamics & 120.00 \\ \hline
+Charlie Retail & 116.67 \\ \hline
+Foxtrot Mart & 80.00 \\ \hline
+Halo Tech & 52.50 \\ \hline
+\end{tabular}
+\end{center}
+\newpage
+\subsection*{Q5: List the names and populations of cities that have received a shipment weighing over 100 pounds.}
+\begin{lstlisting}[language=SQL]
+SELECT
+  city_name,
+  population,
+  weight
+FROM
+  city
+  JOIN shipment ON shipment.destination = city.city_name
+WHERE
+  weight > 100
+ORDER BY
+  weight ASC;
+\end{lstlisting}
+\vspace{0.3cm}
+\textbf{Output:}\vspace{0.2cm}
+\begin{center}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{city\_name} & \textbf{population} & \textbf{weight} \\ \hline
+Mumbai & 12000000 & 150 \\ \hline
+Kolkata & 4500000 & 150 \\ \hline
+Chennai & 7000000 & 150 \\ \hline
+Pune & 800000 & 150 \\ \hline
+Delhi & 11000000 & 150 \\ \hline
+Bangalore & 8000000 & 150 \\ \hline
+Hyderabad & 6900000 & 150 \\ \hline
+Jaipur & 3000000 & 150 \\ \hline
+Surat & 4400000 & 150 \\ \hline
+Kochi & 600000 & 150 \\ \hline
+Pune & 800000 & 210 \\ \hline
+Chennai & 7000000 & 250 \\ \hline
+Pune & 800000 & 300 \\ \hline
+Kolkata & 4500000 & 300 \\ \hline
+Pune & 800000 & 500 \\ \hline
+Kochi & 600000 & 750 \\ \hline
+Delhi & 11000000 & 999 \\ \hline
+\end{tabular}
+\end{center}
+\newpage
+\subsection*{Q6: List cities that have received shipments from every customer.}
+\begin{lstlisting}[language=SQL]
+SELECT
+  city.city_name
+FROM
+  city
+  JOIN shipment on shipment.destination = city.city_name
+GROUP BY
+  city.city_name
+HAVING
+  COUNT(DISTINCT shipment.cust_id) = (
+    SELECT
+      COUNT(cust_id)
+    FROM
+      customer
+  );
+\end{lstlisting}
+\vspace{0.3cm}
+\textbf{Output:}\vspace{0.2cm}
+\begin{center}
+\begin{tabular}{|l|}
+\hline
+\textbf{city\_name} \\ \hline
+Pune \\ \hline
+\end{tabular}
+\end{center}
+\newpage
+\subsection*{Q7: For each city, what is the maximum weight of a package sent to that city?}
+\begin{lstlisting}[language=SQL]
+SELECT
+  city.city_name,
+  MAX(shipment.weight)
+FROM
+  city
+  JOIN shipment on city.city_name = shipment.destination
+GROUP BY
+  city.city_name;
+\end{lstlisting}
+\vspace{0.3cm}
+\textbf{Output:}\vspace{0.2cm}
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{city\_name} & \textbf{max} \\ \hline
+Kochi & 750 \\ \hline
+Hyderabad & 150 \\ \hline
+Kolkata & 300 \\ \hline
+Pune & 500 \\ \hline
+Jaipur & 150 \\ \hline
+Mumbai & 150 \\ \hline
+Delhi & 999 \\ \hline
+Surat & 150 \\ \hline
+Chennai & 250 \\ \hline
+Bangalore & 150 \\ \hline
+\end{tabular}
+\end{center}
+\newpage
+\subsection*{Q8: List the name and annual revenue of customers whose shipments have been delivered by truck driver ‘IQBAL’.}
+\begin{lstlisting}[language=SQL]
+SELECT DISTINCT
+  customer.cust_name,
+  customer.annual_revenue
+FROM
+  customer
+  JOIN shipment on customer.cust_id = shipment.cust_id
+  JOIN truck on shipment.truck_no = truck.truck_no
+WHERE
+  driver_name = 'IQBAL';
+\end{lstlisting}
+\vspace{0.3cm}
+\textbf{Output:}\vspace{0.2cm}
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{cust\_name} & \textbf{annual\_revenue} \\ \hline
+Beta Goods & 300000.00 \\ \hline
+Echo Supplies & 200000.00 \\ \hline
+Gamma Traders & 450000.00 \\ \hline
+Jupiter Mills & 600000.00 \\ \hline
+\end{tabular}
+\end{center}
+\newpage
+\subsection*{Q9: List drivers who have delivered shipments to every city.}
+\begin{lstlisting}[language=SQL]
+SELECT
+  truck.driver_name
+FROM
+  truck
+  JOIN shipment on shipment.truck_no = truck.truck_no
+GROUP BY
+  truck.truck_no
+HAVING
+  COUNT(DISTINCT shipment.destination) = (
+    SELECT
+      COUNT(city_name)
+    FROM
+      city
+  );
+\end{lstlisting}
+\vspace{0.3cm}
+\textbf{Output:}\vspace{0.2cm}
+\begin{center}
+\begin{tabular}{|l|}
+\hline
+\textbf{driver\_name} \\ \hline
+SAM \\ \hline
+\end{tabular}
+\end{center}
+\newpage
+\subsection*{Q10: For each city, with population over 1 million, what is the minimum weight of a package sent to that city.}
+\begin{lstlisting}[language=SQL]
+SELECT
+  city.city_name,
+  MIN(shipment.weight)
+FROM
+  city
+  JOIN shipment on shipment.destination = city.city_name
+WHERE
+  city.population > 1000000
+GROUP BY
+  city.city_name
+\end{lstlisting}
+\vspace{0.3cm}
+\textbf{Output:}\vspace{0.2cm}
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{city\_name} & \textbf{min} \\ \hline
+Mumbai & 10 \\ \hline
+Jaipur & 150 \\ \hline
+Delhi & 150 \\ \hline
+Surat & 150 \\ \hline
+Chennai & 150 \\ \hline
+Hyderabad & 150 \\ \hline
+Bangalore & 150 \\ \hline
+Kolkata & 150 \\ \hline
+\end{tabular}
+\end{center}
+\newpage
+
+\section{Problem9}
+
+\subsection*{Schema Creation}
+\textbf{Schema Requirements:}
+\begin{itemize}
+    \item EMP (\underline{EMPNO}, ENAME, JOB, MGR, HIREDATE, SAL, COMM, DEPTNO) \\
+    \textit{EMPNO must be between 7000 and 8000. ENAME must not exceed 10 characters. JOB must be in (`Clerk', `Salesman', `Manager', `Analyst', `President'). MGR is the manager's EMPNO. COMM must be under 1500 and defaults to 0.}
+    \item DEPT (\underline{DEPTNO}, DNAME, LOC) \\
+    \textit{DEPTNO must start with `D'. DNAME must be `Accounting' or `Sales' or `Research' or `Operations'.}
+\end{itemize}
+
+\begin{lstlisting}[language=SQL]
+-- DDL Schema Creation
+DROP TABLE IF EXISTS EMP CASCADE;
+
+DROP TABLE IF EXISTS DEPT CASCADE;
+
+CREATE TABLE IF NOT EXISTS dept (
+  deptno VARCHAR(10) PRIMARY KEY CHECK (DEPTNO LIKE 'D%'),
+  dname VARCHAR(20) CHECK (
+    dname IN ('Accounting', 'Sales', 'Research', 'Operations')
+  ),
+  loc VARCHAR(30)
+);
+
+CREATE TABLE IF NOT EXISTS emp (
+  empno INTEGER PRIMARY KEY CHECK (
+    empno >= 7000
+    AND empno <= 8000
+  ),
+  ename VARCHAR(10),
+  job VARCHAR(15) CHECK (
+    job in (
+      'Clerk',
+      'Salesman',
+      'Manager',
+      'Analyst',
+      'President'
+    )
+  ),
+  mgr INTEGER REFERENCES EMP (empno) ON DELETE SET NULL,
+  hiredate DATE,
+  sal NUMERIC(10, 2),
+  comm NUMERIC(10, 2) DEFAULT 0 CHECK (comm < 1500),
+  deptno VARCHAR(10) REFERENCES DEPT (DEPTNO)
+);
+\end{lstlisting}
+\newpage
+
+\subsection*{Q1: Display the difference between highest and lowest salary of each department in descending order. Label the column as “Difference”.}
+\begin{lstlisting}[language=SQL]
+SELECT
+  dname,
+  MAX(sal) - MIN(sal) AS Difference
+FROM
+  dept
+  JOIN emp on emp.deptno = dept.deptno
+GROUP BY
+  dname
+ORDER BY
+  MAX(sal) - MIN(sal) DESC;
+\end{lstlisting}
+\vspace{0.3cm}
+\textbf{Output:}\vspace{0.2cm}
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{dname} & \textbf{difference} \\ \hline
+Accounting & 3700.00 \\ \hline
+Research & 2200.00 \\ \hline
+Sales & 1900.00 \\ \hline
+\end{tabular}
+\end{center}
+\newpage
+\subsection*{Q2: List all the employees’ employee number and name along with their immediate managers’ employee number and name.}
+\begin{lstlisting}[language=SQL]
+SELECT
+  e1.empno,
+  e1.ename,
+  e2.empno as manager_id,
+  e2.ename as manager_name
+FROM
+  emp e1
+  LEFT JOIN emp e2 on e1.mgr = e2.empno;
+\end{lstlisting}
+\vspace{0.3cm}
+\textbf{Output:}\vspace{0.2cm}
+\begin{center}
+\begin{tabular}{|l|l|l|l|}
+\hline
+\textbf{empno} & \textbf{ename} & \textbf{manager\_id} & \textbf{manager\_name} \\ \hline
+7839 & Andrew & NULL & NULL \\ \hline
+7566 & JONES & 7839 & Andrew \\ \hline
+7698 & BLAKE & 7839 & Andrew \\ \hline
+7782 & CLARK & 7839 & Andrew \\ \hline
+7788 & SCOTT & 7566 & JONES \\ \hline
+7902 & FORD & 7566 & JONES \\ \hline
+7499 & ALLEN & 7698 & BLAKE \\ \hline
+7521 & WARD & 7698 & BLAKE \\ \hline
+7654 & MARTIN & 7698 & BLAKE \\ \hline
+7369 & SMITH & 7902 & FORD \\ \hline
+7876 & ADAMS & 7788 & SCOTT \\ \hline
+7900 & JAMES & 7698 & BLAKE \\ \hline
+7934 & MILLER & 7782 & CLARK \\ \hline
+\end{tabular}
+\end{center}
+\newpage
+\subsection*{Q3: Create a query that will display the total number of employees and the total number of employees who were hired only in 2020. Give the column headings as “TOTAL” and “TOTAL\_2020” respectively.}
+\begin{lstlisting}[language=SQL]
+SELECT
+  (
+    SELECT
+      COUNT(*)
+    FROM
+      emp
+  ) AS TOTAL,
+  (
+    SELECT
+      COUNT(*)
+    FROM
+      emp
+    WHERE
+      EXTRACT(
+        YEAR
+        FROM
+          hiredate
+      ) = 2020
+  ) as TOTAL_2020;
+
+\end{lstlisting}
+\vspace{0.3cm}
+\textbf{Output:}\vspace{0.2cm}
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{total} & \textbf{total\_2020} \\ \hline
+13 & 8 \\ \hline
+\end{tabular}
+\end{center}
+\newpage
+\subsection*{Q4: Display the manager number and the salary of the lowest paid employee under that manager. Exclude anyone whose manager is not known. Exclude any group where the minimum salaryis less than 1000. Sort the output in descending order of salary.}
+\begin{lstlisting}[language=SQL]
+SELECT
+  mgr as manager_id,
+  MIN(sal) as min_sal
+FROM
+  emp
+WHERE
+  mgr IS NOT NULL
+GROUP BY
+  mgr
+HAVING
+  MIN(sal) >= 1000
+ORDER BY
+  min_sal DESC;
+\end{lstlisting}
+\vspace{0.3cm}
+\textbf{Output:}\vspace{0.2cm}
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{manager\_id} & \textbf{min\_sal} \\ \hline
+7566 & 3000.00 \\ \hline
+7839 & 2450.00 \\ \hline
+7782 & 1300.00 \\ \hline
+7788 & 1100.00 \\ \hline
+\end{tabular}
+\end{center}
+\newpage
+\subsection*{Q5: Assume that there are some departments where no employee is assigned. Now, write
+a query to display the department name, location name, number of employees, and the
+average salary for all the employees in that department. Label the columns as
+“DNAME”, “LOCATION”, “NUMBER OF PEOPLE”, and “AVERAGE SALARY”
+respectively. Round the averge salary to two decimal places. The outcome of the
+query must include the details of the departments where no employee is assigned and
+in that case the “AVERAGE SALARY” for that department is to be displayed as 0
+(zero).}
+\begin{lstlisting}[language=SQL]
+SELECT
+  dname,
+  loc AS LOCATION,
+  COUNT(empno) as "NUMBER OF PEOPLE",
+  ROUND(COALESCE(AVG(sal), 0), 2) as "AVERAGE SALARY"
+FROM
+  dept d
+  LEFT JOIN emp e ON d.deptno = e.deptno
+GROUP BY
+  dname,
+  loc
+ORDER BY
+  "AVERAGE SALARY" DESC;
+\end{lstlisting}
+\vspace{0.3cm}
+\textbf{Output:}\vspace{0.2cm}
+\begin{center}
+\begin{tabular}{|l|l|l|l|}
+\hline
+\textbf{dname} & \textbf{location} & \textbf{NUMBER OF PEOPLE} & \textbf{AVERAGE SALARY} \\ \hline
+Accounting & NEW YORK & 3 & 2916.67 \\ \hline
+Research & DALLAS & 5 & 2175.00 \\ \hline
+Sales & CHICAGO & 5 & 1580.00 \\ \hline
+Operations & BOSTON & 0 & 0.00 \\ \hline
+\end{tabular}
+\end{center}
+\newpage
+
+\end{document}
