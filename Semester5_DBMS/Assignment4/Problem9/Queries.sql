@@ -22,19 +22,24 @@ FROM
 
 -- Q3: Create a query that will display the total number of employees and the total number of employees who were hired only in 2020. Give the column headings as “TOTAL” and “TOTAL_2020” respectively.
 SELECT
-  COUNT(*) as TOTAL,
-  COUNT(*) FILTER (
+  (
+    SELECT
+      COUNT(*)
+    FROM
+      emp
+  ) AS TOTAL,
+  (
+    SELECT
+      COUNT(*)
+    FROM
+      emp
     WHERE
-      (
-        EXTRACT(
-          YEAR
-          FROM
-            hiredate
-        ) = 2020
-      )
-  ) AS TOTAL_2020
-FROM
-  emp;
+      EXTRACT(
+        YEAR
+        FROM
+          hiredate
+      ) = 2020
+  ) as TOTAL_2020;
 
 -- Q4: Display the manager number and the salary of the lowest paid employee under that manager. Exclude anyone whose manager is not known. Exclude any group where the minimum salaryis less than 1000. Sort the output in descending order of salary.
 SELECT
