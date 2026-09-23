@@ -10,18 +10,24 @@ WHERE
 
 UPDATE students
 SET
-  parent_inc = parent_inc + 5000
+  parent_inc = parent_inc + 5000;
 DROP VIEW cse_stud;
 
 CREATE VIEW mech_engineers AS
 SELECT
-  rollno,
-  name,
-  hostel
+  rollno as "Roll-no",
+  name AS Name,
+  deptcode AS "Department name",
+    AGE(CURRENT_DATE, bdate) as Age 
 FROM
   students
 WHERE
   TRIM(deptcode) = 'MEC';
+
+DROP VIEW mech_engineers;
+
+INSERT INTO mech_engineers ("Roll -No", "Name", "Department Name", "Age")
+VALUES (2002, "Jane Smith", "MEC", ’20 years’) ;
 
 INSERT INTO
   students (rollno, name, deptcode, bdate, hostel, parent_inc)
