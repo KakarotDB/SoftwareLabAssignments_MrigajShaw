@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Expenses - Edit/Delete/Sort - 2024CSB041</title>
+    <style>
+        body { font-family: sans-serif; }
+        table { border-collapse: collapse; width: 85%; margin-top: 15px; }
+        th, td { border: 1px solid #999; padding: 8px 12px; text-align: left; }
+        th { background-color: #eee; cursor: pointer; user-select: none; }
+        th:hover { background-color: #ddd; }
+        input[type="text"] { padding: 6px; width: 250px; }
+        input.editInput { width: 90px; }
+        button { margin-right: 4px; }
+    </style>
+</head>
+<body>
+
+    <h2>Expenses — 2024CSB041</h2>
+    <input type="text" id="searchBox" placeholder="Search by item or category...">
+
+    <table>
+        <thead>
+            <tr>
+                <th data-col="expense_id">ID</th>
+                <th data-col="item_name">Item</th>
+                <th data-col="category">Category</th>
+                <th data-col="amount">Amount</th>
+                <th data-col="expense_date">Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+    </table>
+
+    <script>
+        const tableBody = document.getElementById('tableBody');
+        const searchBox = document.getElementById('searchBox');
+        let debounceTimer;
+        let currentSort = 'expense_id';
+        let currentDir = 'ASC';
+
+        // normal (non-edit) row
+        function viewRow(row) {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${row.expense_id}</td>
+                <td>${row.item_name}</td>
+                <td>${row.category}</td>
+                <td>${row.amount}</td>
+                <td>${row.expense_date}</td>
+                <td>
+                    <button class="editBtn">Edit</button>
+                    <button class="deleteBtn">Delete</button>
+                </td>
+            `;
+            tr.querySelector('.editBtn').addEventListener('click', () => tr.replaceWith(editRow(row)));
+            tr.querySelector('.deleteBtn').addEventListener('click', () => deleteRecord(row.expense_id));
+            return tr;
+        }
+
+        // editable row, swapped in when Edit is clicked
+        function editRow(row) {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${row.expense_id}</td>
+                <td><input class="editInput" type="text" value="${row.item_name}" data-field="item_name"></td>
+                <td><input class="editInput" type="text" value="${row.category}" data-field="category"></td>
+                <td><input class="editInput" type="number" step="0.01" value="${row.amount}" data-field="amount"></td>
+                <td><input class="editInput" type="date" value="${row.expense_date}" data-field="expense_date"></td>
+                <td>
+                    <button class="saveBtn">Save</button>
+                    <button class="cancelBtn">Cancel</button>
+                </td>
+            `;
+            tr.querySelector('.saveBtn').addEventListener('click', () => saveRecord(row.expense_id, tr));
+            tr.querySelector('.cancelBtn').addEventListener('click', () => tr.replaceWith(viewRow(row)));
+            return tr;
+        }
+
+        function renderTable(data) {
+            tableBody.innerHTML = '';
+            if (data.error || data.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="6">${data.error || 'No records found'}</td></tr>`;
+                return;
+            }
+            data.forEach(row => tableBody.appendChild(viewRow(row)));
+        }
+
+        function loadData() {
+            const query = encodeURIComponent(searchBox.value);
+            fetch(`fetch_data.php?q=${query}&sort=${currentSort}&dir=${currentDir}`)
+                .then(res => res.json())
+                .then(renderTable)
+                .catch(() => tableBody.innerHTML = `<tr><td colspan="6">Request failed</td></tr>`);
+        }
+
+        searchBox.addEventListener('input', () => {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(loadData, 300);
+        });
+
+        // Problem 8: click header to sort, click again to flip direction
+        document.querySelectorAll('th[data-col]').forEach(th => {
+            th.addEventListener('click', () => {
+                const col = th.dataset.col;
+                if (currentSort === col) {
+                    currentDir = currentDir === 'ASC' ? 'DESC' : 'ASC';
+                } else {
+                    currentSort = col;
+                    currentDir = 'ASC';
+                }
+                loadData();
+            });
+        });
+
+        // Problem 7: save edited row
+        function saveRecord(id, tr) {
+            const formData = new FormData();
+            formData.append('expense_id', id);
+            tr.querySelectorAll('.editInput').forEach(input => {
+                formData.append(input.dataset.field, input.value);
+            });
+
+            fetch('update_data.php', { method: 'POST', body: formData })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) loadData();
+                    else alert(data.message);
+                })
+                .catch(() => alert('Update request failed'));
+        }
+
+        // Problem 7: delete row
+        function deleteRecord(id) {
+            if (!confirm('Delete this record?')) return;
+
+            const formData = new FormData();
+            formData.append('expense_id', id);
+
+            fetch('delete_data.php', { method: 'POST', body: formData })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) loadData();
+                    else alert(data.message);
+                })
+                .catch(() => alert('Delete request failed'));
+        }
+
+        loadData();
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Expenses - 2024CSB041</title>
+    <style>
+        body { font-family: sans-serif; }
+        label { display: block; margin-top: 10px; }
+        table { border-collapse: collapse; width: 70%; margin-top: 15px; }
+        th, td { border: 1px solid #999; padding: 8px 12px; text-align: left; }
+        th { background-color: #eee; }
+        input[type="text"] { padding: 6px; width: 250px; }
+        section { margin-bottom: 40px; }
+    </style>
+</head>
+<body>
+
+    <section>
+        <h2>Add New Expense</h2>
+        <form id="expenseForm">
+            <label>Item Name:
+                <input type="text" name="item_name" required>
+            </label>
+            <label>Amount:
+                <input type="number" name="amount" step="0.01" required>
+            </label>
+            <label>Payment Mode:</label>
+            <input type="radio" name="payment_mode" value="Cash" checked> Cash
+            <input type="radio" name="payment_mode" value="Card"> Card
+            <input type="radio" name="payment_mode" value="UPI"> UPI
+            <label>Category:</label>
+            <select name="category" size="4" required>
+                <option value="Food">Food</option>
+                <option value="Transport">Transport</option>
+                <option value="Education">Education</option>
+                <option value="Entertainment">Entertainment</option>
+                <option value="Utilities">Utilities</option>
+            </select>
+            <input type="hidden" name="expense_date" id="expense_date">
+            <br><br>
+            <button type="submit">Add Expense</button>
+        </form>
+        <p id="statusMsg"></p>
+    </section>
+
+    <section>
+        <h2>All Expenses</h2>
+        <input type="text" id="searchBox" placeholder="Search by item or category...">
+        <table>
+            <thead>
+                <tr><th>ID</th><th>Item</th><th>Category</th><th>Amount</th><th>Date</th></tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+    </section>
+
+    <section>
+        <h2>Statistics</h2>
+        <button id="loadStatsBtn">Load Stats</button>
+        <p id="statsSummary"></p>
+        <table>
+            <thead>
+                <tr><th>ID</th><th>Item</th><th>Amount</th><th>Grade</th></tr>
+            </thead>
+            <tbody id="statsBody"></tbody>
+        </table>
+    </section>
+
+    <script>
+        const tableBody = document.getElementById('tableBody');
+        const searchBox = document.getElementById('searchBox');
+        let debounceTimer;
+
+        function renderTable(data) {
+            tableBody.innerHTML = '';
+            if (data.error || data.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="5">${data.error || 'No records found'}</td></tr>`;
+                return;
+            }
+            data.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${row.expense_id}</td>
+                    <td>${row.item_name}</td>
+                    <td>${row.category}</td>
+                    <td>${row.amount}</td>
+                    <td>${row.expense_date}</td>
+                `;
+                tableBody.appendChild(tr);
+            });
+        }
+
+        // Problem 3: initial load
+        function loadAllRecords() {
+            fetch('fetch_data.php')
+                .then(res => res.json())
+                .then(renderTable)
+                .catch(() => tableBody.innerHTML = `<tr><td colspan="5">Failed to load data</td></tr>`);
+        }
+
+        // Problem 5: live search
+        function runSearch() {
+            const query = encodeURIComponent(searchBox.value);
+            fetch(`search_data.php?q=${query}`)
+                .then(res => res.json())
+                .then(renderTable)
+                .catch(() => tableBody.innerHTML = `<tr><td colspan="5">Request failed</td></tr>`);
+        }
+
+        searchBox.addEventListener('input', () => {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(runSearch, 300);
+        });
+
+        // Problem 4: insert form
+        document.getElementById('expense_date').value = new Date().toISOString().split('T')[0];
+
+        document.getElementById('expenseForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const statusMsg = document.getElementById('statusMsg');
+
+            fetch('insert_data.php', { method: 'POST', body: new FormData(this) })
+                .then(res => res.json())
+                .then(data => {
+                    statusMsg.textContent = data.message;
+                    statusMsg.style.color = data.success ? 'green' : 'red';
+                    if (data.success) {
+                        this.reset();
+                        document.getElementById('expense_date').value = new Date().toISOString().split('T')[0];
+                        searchBox.value === '' ? loadAllRecords() : runSearch();
+                    }
+                })
+                .catch(() => {
+                    statusMsg.textContent = 'Request failed';
+                    statusMsg.style.color = 'red';
+                });
+        });
+
+        // Problem 6: stats
+        document.getElementById('loadStatsBtn').addEventListener('click', () => {
+            fetch('stats_data.php')
+                .then(res => res.json())
+                .then(data => {
+                    const statsBody = document.getElementById('statsBody');
+                    statsBody.innerHTML = '';
+                    if (data.error) {
+                        statsBody.innerHTML = `<tr><td colspan="4">${data.error}</td></tr>`;
+                        return;
+                    }
+                    document.getElementById('statsSummary').textContent =
+                        `Total: ${data.total} | Average: ${data.average}`;
+                    data.rows.forEach(row => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>${row.expense_id}</td>
+                            <td>${row.item_name}</td>
+                            <td>${row.amount}</td>
+                            <td>${row.grade}</td>
+                        `;
+                        statsBody.appendChild(tr);
+                    });
+                })
+                .catch(() => document.getElementById('statsBody').innerHTML = `<tr><td colspan="4">Request failed</td></tr>`);
+        });
+
+        loadAllRecords();
+    </script>
+
+</body>
+</html>
