@@ -24,7 +24,7 @@ public class ExpenseServlet extends HttpServlet {
             // 2. Connect to Postgres
             Class.forName("org.postgresql.Driver");
             Connection con = DriverManager.getConnection(
-                "jdbc:postgresql://localhost:5432/web_tech_assignments", "postgres", "MrigajSuman@2015");
+                "jdbc:postgresql://localhost:5432/web_tech_assignments", "postgres", );
 
             // 3. Insert (note the quotes around the table name)
             PreparedStatement ps = con.prepareStatement(
